@@ -64,6 +64,11 @@ def addToFavorites(game):
         saveToUserLibrary(currentUser, game)
         refreshUserLibrary()
 
+# Inicializar janela principal
+app = ctk.CTk()
+app.title("Gestão de Jogos - Loja")
+app.geometry("1024x600")
+
 # Função para exibir detalhes do jogo em uma janela modal
 def showGameDetails(game):
     modal = Toplevel(app)
@@ -88,10 +93,68 @@ def showGameDetails(game):
     addFavoriteButton = ctk.CTkButton(modal, text="Adicionar à Biblioteca", command=lambda: [addToFavorites(game), modal.destroy()])
     addFavoriteButton.pack(pady=20)
 
-# Inicializar janela principal
-app = ctk.CTk()
-app.title("Gestão de Jogos - Loja")
-app.geometry("800x600")
+# Previsualização da aplicação
+
+## Left Sidebar
+sidebar = ctk.CTkFrame(app, bg="#1a1a1a", width=300, height=600)
+sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+logo = ctk.Label(sidebar, text="GameON!", bg="#1a1a1a", fg="#ffa500", font=("Arial", 16, "bold"))
+logo.pack(pady=10)
+
+librarybtn = ctk.Button(sidebar, text="REGISTER NOW!", bg="#ffa500", fg="#ffffff",
+                                font=("Times", 24, "bold"), relief=ctk.FLAT)
+librarybtn.pack(fill=ctk.X, pady=15, padx=10)
+
+buttons = ["STORE", "DISCOVER"]
+for btn in buttons:
+    button = ctk.Button(sidebar, text=btn, bg="#383838", 
+                        fg="white", font=("Arial", 12), relief=ctk.FLAT)
+    button.pack(fill=ctk.X, pady=5, padx=10)
+
+profile_settings = ctk.Button(sidebar, text="PROFILE SETTINGS", bg="#ff4500", fg="white", 
+                                font=("Arial", 12), relief=ctk.FLAT)
+profile_settings.pack(side=ctk.BOTTOM, fill=ctk.X, pady=10, padx=10)
+
+## Main Content
+main_content = ctk.CTkFrame(app, bg="#000000")
+main_content.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
+
+## Top Bar
+top_bar = ctk.CTkFrame(main_content, bg="#1a1a1a", height=50)
+top_bar.pack(side=ctk.TOP, fill=ctk.X)
+
+discover_label = ctk.Label(top_bar, text="DISCOVER", bg="#1a1a1a", fg="white", font=("Arial", 14))
+discover_label.pack(side=ctk.LEFT, padx=20)
+
+search_entry = ctk.Entry(top_bar, font=("Arial", 12))
+search_entry.pack(side=ctk.RIGHT, padx=20, pady=10)
+search_entry.insert(0, "SEARCH...")
+
+## Discount Section
+discount_frame = ctk.CTkFrame(main_content, bg="#ffa500", height=150)
+discount_frame.pack(fill=ctk.X, pady=10, padx=20)
+
+discount_label = ctk.Label(discount_frame, text="DISCOUNT", bg="#ffa500", fg="#000000", 
+                            font=("Arial", 16, "bold"))
+discount_label.pack(pady=20)
+
+## Game Cards
+game_frame = ctk.CTkFrame(main_content, bg="#000000")
+game_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
+
+for _ in range(3):
+    game_card = ctk.CTkFrame(game_frame, bg="#cccccc", width=200, height=250)
+    game_card.pack(side=ctk.LEFT, padx=20, pady=10)
+
+    game_label = ctk.Label(game_card, text="GAME I", bg="#cccccc", fg="#000000", font=("Arial", 12, "bold"))
+    game_label.pack(pady=40)
+
+    game_info = ctk.Label(game_card, text="Name game\nPrice", bg="#cccccc", fg="#000000", font=("Arial", 10))
+    game_info.pack(side=ctk.BOTTOM, pady=10)
+
+    favorite_icon = ctk.Label(game_card, text="\u2764", bg="#cccccc", fg="#000000", font=("Arial", 14))
+    favorite_icon.pack(side=ctk.BOTTOM)
 
 # Configurar grid para múltiplos frames
 app.rowconfigure(0, weight=1)

@@ -105,6 +105,7 @@ def loginAsUser():
                 file = open(userFile, "r")
                 savedPassword = decodeBinary(file.readline().strip())
                 file.close()
+                
 
                 if savedPassword == password:  
                     currentUser = login_input
@@ -146,7 +147,6 @@ def registerUser():
     else:
         messagebox.showwarning("Warning", "Fill all the fields.")
 
-
 # --------------- FRAME CINZENTO ---------------------
 #-----------------------------------------------------
 
@@ -179,7 +179,7 @@ login_button.pack(side="left", padx=5, anchor="center")
 signIn_button = customtkinter.CTkButton(button_frame, text="SIGN IN", fg_color="orange", width=95, height=25, border_color="black", text_color="black", font=("Arial", 14, "bold"), command=goToRegister)
 signIn_button.pack(side="left", padx=5, anchor="center")
 
-# ---------------AREA UTILIZADOR (SIGN IN)---------------------
+# --------------- AREA UTILIZADOR (SIGN IN) ----------------------
 #-----------------------------------------------------------------
 
 signIn_input_frame = customtkinter.CTkFrame(signIn_frame, fg_color="gray")
