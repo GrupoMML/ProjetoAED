@@ -95,66 +95,70 @@ def showGameDetails(game):
 
 # Previsualização da aplicação
 
-## Left Sidebar
-sidebar = ctk.CTkFrame(app, bg="#1a1a1a", width=300, height=600)
-sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+def previewPage():
+    # Remover conteúdo atual do app
+    for widget in app.winfo_children():
+        widget.destroy()
 
-logo = ctk.Label(sidebar, text="GameON!", bg="#1a1a1a", fg="#ffa500", font=("Arial", 16, "bold"))
-logo.pack(pady=10)
+    # Sidebar à esquerda
+    sidebar = ctk.CTkFrame(app, width=300, height=600, corner_radius=0, bg_color="#1a1a1a")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
 
-librarybtn = ctk.Button(sidebar, text="REGISTER NOW!", bg="#ffa500", fg="#ffffff",
-                                font=("Times", 24, "bold"), relief=ctk.FLAT)
-librarybtn.pack(fill=ctk.X, pady=15, padx=10)
+    logo = ctk.CTkLabel(sidebar, text="GameON!", text_color="#ffa500", font=("Arial", 16, "bold"))
+    logo.pack(pady=10)
 
-buttons = ["STORE", "DISCOVER"]
-for btn in buttons:
-    button = ctk.Button(sidebar, text=btn, bg="#383838", 
-                        fg="white", font=("Arial", 12), relief=ctk.FLAT)
-    button.pack(fill=ctk.X, pady=5, padx=10)
+    librarybtn = ctk.CTkButton(sidebar, text="REGISTER NOW!", text_color="#ffffff", fg_color="#ffa500",
+                               font=("Arial", 14), hover_color="#ff8c00", command=lambda: print("Register Clicked"))
+    librarybtn.pack(fill=ctk.X, pady=15, padx=10)
 
-profile_settings = ctk.Button(sidebar, text="PROFILE SETTINGS", bg="#ff4500", fg="white", 
-                                font=("Arial", 12), relief=ctk.FLAT)
-profile_settings.pack(side=ctk.BOTTOM, fill=ctk.X, pady=10, padx=10)
+    buttons = ["STORE", "DISCOVER"]
+    for btn in buttons:
+        button = ctk.CTkButton(sidebar, text=btn, text_color="white", fg_color="#383838",
+                               font=("Arial", 12), hover_color="#505050", command=lambda: print(f"{btn} Clicked"))
+        button.pack(fill=ctk.X, pady=5, padx=10)
 
-## Main Content
-main_content = ctk.CTkFrame(app, bg="#000000")
-main_content.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
+    profile_settings = ctk.CTkButton(sidebar, text="PROFILE SETTINGS", text_color="white", fg_color="#ff4500",
+                                     font=("Arial", 12), hover_color="#e04000", command=lambda: print("Profile Settings Clicked"))
+    profile_settings.pack(side=ctk.BOTTOM, fill=ctk.X, pady=10, padx=10)
 
-## Top Bar
-top_bar = ctk.CTkFrame(main_content, bg="#1a1a1a", height=50)
-top_bar.pack(side=ctk.TOP, fill=ctk.X)
+    # Main content
+    main_content = ctk.CTkFrame(app, bg_color="#000000")
+    main_content.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
 
-discover_label = ctk.Label(top_bar, text="DISCOVER", bg="#1a1a1a", fg="white", font=("Arial", 14))
-discover_label.pack(side=ctk.LEFT, padx=20)
+    # Top bar
+    top_bar = ctk.CTkFrame(main_content, height=50, fg_color="#1a1a1a")
+    top_bar.pack(side=ctk.TOP, fill=ctk.X)
 
-search_entry = ctk.Entry(top_bar, font=("Arial", 12))
-search_entry.pack(side=ctk.RIGHT, padx=20, pady=10)
-search_entry.insert(0, "SEARCH...")
+    discover_label = ctk.CTkLabel(top_bar, text="DISCOVER", text_color="white", font=("Arial", 14))
+    discover_label.pack(side=ctk.LEFT, padx=20)
 
-## Discount Section
-discount_frame = ctk.CTkFrame(main_content, bg="#ffa500", height=150)
-discount_frame.pack(fill=ctk.X, pady=10, padx=20)
+    search_entry = ctk.CTkEntry(top_bar, placeholder_text="SEARCH...", font=("Arial", 12))
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=10)
 
-discount_label = ctk.Label(discount_frame, text="DISCOUNT", bg="#ffa500", fg="#000000", 
-                            font=("Arial", 16, "bold"))
-discount_label.pack(pady=20)
+    # Discount Section
+    discount_frame = ctk.CTkFrame(main_content, fg_color="#ffa500", height=150)
+    discount_frame.pack(fill=ctk.X, pady=10, padx=20)
 
-## Game Cards
-game_frame = ctk.CTkFrame(main_content, bg="#000000")
-game_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
+    discount_label = ctk.CTkLabel(discount_frame, text="DISCOUNT", text_color="#000000",
+                                  font=("Arial", 16, "bold"))
+    discount_label.pack(pady=20)
 
-for _ in range(3):
-    game_card = ctk.CTkFrame(game_frame, bg="#cccccc", width=200, height=250)
-    game_card.pack(side=ctk.LEFT, padx=20, pady=10)
+    # Game Cards Section
+    game_frame = ctk.CTkFrame(main_content, bg_color="#000000")
+    game_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
 
-    game_label = ctk.Label(game_card, text="GAME I", bg="#cccccc", fg="#000000", font=("Arial", 12, "bold"))
-    game_label.pack(pady=40)
+    for i in range(3):  # Cria 3 cards de exemplo
+        game_card = ctk.CTkFrame(game_frame, fg_color="#cccccc", width=200, height=250)
+        game_card.pack(side=ctk.LEFT, padx=20, pady=10)
 
-    game_info = ctk.Label(game_card, text="Name game\nPrice", bg="#cccccc", fg="#000000", font=("Arial", 10))
-    game_info.pack(side=ctk.BOTTOM, pady=10)
+        game_label = ctk.CTkLabel(game_card, text=f"GAME {i + 1}", text_color="#000000", font=("Arial", 12, "bold"))
+        game_label.pack(pady=40)
 
-    favorite_icon = ctk.Label(game_card, text="\u2764", bg="#cccccc", fg="#000000", font=("Arial", 14))
-    favorite_icon.pack(side=ctk.BOTTOM)
+        game_info = ctk.CTkLabel(game_card, text="Name game\nPrice", text_color="#000000", font=("Arial", 10))
+        game_info.pack(side=ctk.BOTTOM, pady=10)
+
+        favorite_icon = ctk.CTkLabel(game_card, text="\u2764", text_color="#000000", font=("Arial", 14))
+        favorite_icon.pack(side=ctk.BOTTOM)
 
 # Configurar grid para múltiplos frames
 app.rowconfigure(0, weight=1)
@@ -213,6 +217,9 @@ userButton.pack(pady=20)
 registerButton = ctk.CTkButton(loginFrame, text="Registrar-se", command=goToRegister, width=250, height=50)
 registerButton.pack(pady=20)
 
+previewPage = ctk.CTkButton(loginFrame, text="Previsualização", command=previewPage, width=250, height=50)
+previewPage.pack(pady=20)
+
 # --- Frame de Registro ---
 registerLabel = ctk.CTkLabel(registerFrame, text="Registrar Novo utilizador", font=("Arial", 24))
 registerLabel.pack(pady=20)
@@ -243,6 +250,7 @@ registerConfirmButton.pack(pady=20)
 
 registerBackButton = ctk.CTkButton(registerFrame, text="Voltar", command=lambda: showFrame(loginFrame), width=250, height=50)
 registerBackButton.pack(pady=20)
+
 
 # --- Frame Admin ---
 adminLabel = ctk.CTkLabel(adminFrame, text="Painel do Admin", font=("Arial", 24))
