@@ -67,7 +67,7 @@ def addToFavorites(game):
 
 # Inicializar janela principal
 app = ctk.CTk()
-app.title("Gestão de Jogos - Loja")
+app.title("GameON!")
 app.geometry("1024x600")
 
 # Função para exibir detalhes do jogo em uma janela modal
@@ -108,19 +108,27 @@ def previewPage():
     logo = ctk.CTkLabel(sidebar, text="GameON!", text_color="#ffa500", font=("Arial", 16, "bold"))
     logo.pack(pady=10)
 
-    librarybtn = ctk.CTkButton(sidebar, text="REGISTER NOW!", text_color="#ffffff", fg_color="#ff4500",
-                               font=("Arial", 14), hover_color="#ffa500", command=lambda: print("Register Clicked"))
-    librarybtn.pack(fill=ctk.X, pady=15, padx=10)
+    libraryBtn = ctk.CTkButton(sidebar, text="Registe Agora!", text_color="#ffffff", fg_color="#ff4500",
+                               font=("Arial", 14), hover_color="#FF5900", command=lambda: print("Registrar"))
+    libraryBtn.pack(fill=ctk.X, pady=15, padx=10)
+
+    storeBtn = ctk.CTkButton(sidebar, text="LOJA", text_color="#ffffff", fg_color="#383838",
+                               font=("Arial", 12), hover_color="#505050", command=lambda: print("Loja"))
+    storeBtn.pack(fill=ctk.X, pady=5, padx=10)
+
+    discoverBtn = ctk.CTkButton(sidebar, text="DESCUBRA", text_color="#ffffff", fg_color="#383838",
+                               font=("Arial", 12), hover_color="#505050", command=lambda: print("Descubra"))
+    discoverBtn.pack(fill=ctk.X, pady=5, padx=10)
 
     buttons = ["STORE", "DISCOVER"]
     for btn in buttons:
         button = ctk.CTkButton(sidebar, text=btn, text_color="white", fg_color="#383838",
-                               font=("Arial", 12), hover_color="#505050", command=lambda: print(f"{btn} Clicked"))
+                               font=("Arial", 12), hover_color="#505050", command=lambda: print(f"{buttons}"))
         button.pack(fill=ctk.X, pady=5, padx=10)
 
-    profile_settings = ctk.CTkButton(sidebar, text="PROFILE SETTINGS", text_color="white", fg_color="#ff4500",
-                                     font=("Arial", 12), hover_color="#e04000", command=lambda: print("Profile Settings Clicked"))
-    profile_settings.pack(side=ctk.BOTTOM, fill=ctk.X, pady=10, padx=10)
+    loginBtn = ctk.CTkButton(sidebar, text="Log In", text_color="white", fg_color="#ff4500",
+                                     font=("Arial", 12), hover_color="#FF5900", command=app)
+    loginBtn.pack(side=ctk.BOTTOM, fill=ctk.X, pady=10, padx=10)
 
     # Main content
     main_content = ctk.CTkFrame(app, bg_color="#000000")
@@ -205,7 +213,8 @@ def loginAsUser():
 def goToRegister():
     showFrame(registerFrame)
 
-box = LabelFrame(loginFrame, padx=50, pady=50, bg="#1a1a1a", borderwidth=0)
+
+box = LabelFrame(loginFrame, padx=150, pady=50, bg="#2e2b2b", borderwidth=0)
 box.pack(expand=True)
 
 logo = ctk.CTkLabel(box, text="GameON!", text_color="#ffa500", font=("Arial", 16, "bold"))
@@ -217,13 +226,13 @@ usernameEntry.grid(padx=(10, 10), pady=(50, 10))
 passwordEntry = ctk.CTkEntry(box, placeholder_text="Senha", show="*", width=250)
 passwordEntry.grid(pady=10)
 
-userButton = ctk.CTkButton(box, text="Login", command=loginAsUser, width=250, height=30)
+userButton = ctk.CTkButton(box, text="Login", command=loginAsUser, width=250, height=30, fg_color="#ffa500", text_color="#000000")
 userButton.grid(pady=5)
 
-registerButton = ctk.CTkButton(box, text="Registrar-se", command=goToRegister, width=250, height=30)
+registerButton = ctk.CTkButton(box, text="Registrar-se", command=goToRegister, width=250, height=30, fg_color="#ffa500", text_color="#000000")
 registerButton.grid(pady=5)
 
-previewBtn = ctk.CTkButton(box, text="Previsualização", command=previewPage, width=250, height=30)
+previewBtn = ctk.CTkButton(box, text="Previsualização", command=previewPage, width=250, height=30, fg_color="#ffa500", text_color="#000000")
 previewBtn.grid(pady=5)
 
 # --- Frame de Registro ---
