@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 import CTkMessagebox
 import base64
+from tkinter import *
 
 # Configuração inicial de estilo
 ctk.set_appearance_mode("dark")
@@ -107,8 +108,8 @@ def previewPage():
     logo = ctk.CTkLabel(sidebar, text="GameON!", text_color="#ffa500", font=("Arial", 16, "bold"))
     logo.pack(pady=10)
 
-    librarybtn = ctk.CTkButton(sidebar, text="REGISTER NOW!", text_color="#ffffff", fg_color="#ffa500",
-                               font=("Arial", 14), hover_color="#ff8c00", command=lambda: print("Register Clicked"))
+    librarybtn = ctk.CTkButton(sidebar, text="REGISTER NOW!", text_color="#ffffff", fg_color="#ff4500",
+                               font=("Arial", 14), hover_color="#ffa500", command=lambda: print("Register Clicked"))
     librarybtn.pack(fill=ctk.X, pady=15, padx=10)
 
     buttons = ["STORE", "DISCOVER"]
@@ -169,6 +170,7 @@ loginFrame = ctk.CTkFrame(app)
 adminFrame = ctk.CTkFrame(app)
 userFrame = ctk.CTkFrame(app)
 registerFrame = ctk.CTkFrame(app)
+loginFrame.pack(expand=True)
 
 for frame in (loginFrame, adminFrame, userFrame, registerFrame):
     frame.grid(row=0, column=0, sticky="nsew")
@@ -178,8 +180,6 @@ currentUser = ""
 userLibrary = []
 
 # --- Frame de Login ---
-loginLabel = ctk.CTkLabel(loginFrame, text="Bem-vindo! Escolha seu perfil:", font=("Arial", 24))
-loginLabel.pack(pady=40)
 
 def loginAsUser():
     global currentUser, userLibrary
@@ -205,20 +205,26 @@ def loginAsUser():
 def goToRegister():
     showFrame(registerFrame)
 
-usernameEntry = ctk.CTkEntry(loginFrame, placeholder_text="Nome de utilizador")
-usernameEntry.pack(pady=10)
+box = LabelFrame(loginFrame, padx=50, pady=50, bg="#1a1a1a", borderwidth=0)
+box.pack(expand=True)
 
-passwordEntry = ctk.CTkEntry(loginFrame, placeholder_text="Senha", show="*")
-passwordEntry.pack(pady=10)
+logo = ctk.CTkLabel(box, text="GameON!", text_color="#ffa500", font=("Arial", 16, "bold"))
+logo.grid(pady=10)        # ----- Aqui é o local exato de onde deve ser a imagem do Logo -----
 
-userButton = ctk.CTkButton(loginFrame, text="Login", command=loginAsUser, width=250, height=50)
-userButton.pack(pady=20)
+usernameEntry = ctk.CTkEntry(box, placeholder_text="Nome de utilizador", width=250)
+usernameEntry.grid(padx=(10, 10), pady=(50, 10))
 
-registerButton = ctk.CTkButton(loginFrame, text="Registrar-se", command=goToRegister, width=250, height=50)
-registerButton.pack(pady=20)
+passwordEntry = ctk.CTkEntry(box, placeholder_text="Senha", show="*", width=250)
+passwordEntry.grid(pady=10)
 
-previewPage = ctk.CTkButton(loginFrame, text="Previsualização", command=previewPage, width=250, height=50)
-previewPage.pack(pady=20)
+userButton = ctk.CTkButton(box, text="Login", command=loginAsUser, width=250, height=30)
+userButton.grid(pady=5)
+
+registerButton = ctk.CTkButton(box, text="Registrar-se", command=goToRegister, width=250, height=30)
+registerButton.grid(pady=5)
+
+previewBtn = ctk.CTkButton(box, text="Previsualização", command=previewPage, width=250, height=30)
+previewBtn.grid(pady=5)
 
 # --- Frame de Registro ---
 registerLabel = ctk.CTkLabel(registerFrame, text="Registrar Novo utilizador", font=("Arial", 24))
