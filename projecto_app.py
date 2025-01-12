@@ -168,7 +168,7 @@ def homePage():
     topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
     topbar.pack(side=ctk.TOP, fill=ctk.X)
     
-    home_label = ctk.CTkLabel(topbar, text="HOME", text_color="white", font=("Arial", 18))
+    home_label = ctk.CTkLabel(topbar, text="Discover", text_color="white", font=("Arial", 18))
     home_label.pack(side=ctk.LEFT, padx=35)
 
     circle_button = ctk.CTkButton(topbar, width=120, height=50, corner_radius=25, fg_color="#FF4500", hover_color="#FF5900",

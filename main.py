@@ -174,7 +174,7 @@ app.rowconfigure(0, weight=1)
 app.columnconfigure(0, weight=1)
 
 # Frames principais
-loginFrame = ctk.CTkFrame(app)
+loginFrame = ctk.CTkFrame(app, fg_color="#000000")
 adminFrame = ctk.CTkFrame(app)
 userFrame = ctk.CTkFrame(app)
 registerFrame = ctk.CTkFrame(app)
@@ -226,13 +226,13 @@ usernameEntry.grid(padx=(10, 10), pady=(50, 10))
 passwordEntry = ctk.CTkEntry(box, placeholder_text="Senha", show="*", width=250)
 passwordEntry.grid(pady=10)
 
-userButton = ctk.CTkButton(box, text="Login", command=loginAsUser, width=250, height=30, fg_color="#ffa500", text_color="#000000")
+userButton = ctk.CTkButton(box, text="Login", command=loginAsUser, width=250, height=30, fg_color="#ffa500", text_color="#000000", hover_color="#FFB100")
 userButton.grid(pady=5)
 
-registerButton = ctk.CTkButton(box, text="Registrar-se", command=goToRegister, width=250, height=30, fg_color="#ffa500", text_color="#000000")
+registerButton = ctk.CTkButton(box, text="Registrar-se", command=goToRegister, width=250, height=30, fg_color="#ffa500", text_color="#000000", hover_color="#FFB100")
 registerButton.grid(pady=5)
 
-previewBtn = ctk.CTkButton(box, text="Previsualização", command=previewPage, width=250, height=30, fg_color="#ffa500", text_color="#000000")
+previewBtn = ctk.CTkButton(box, text="Previsualização", command=previewPage, width=250, height=30, fg_color="#ffa500", text_color="#000000", hover_color="#FFB100")
 previewBtn.grid(pady=5)
 
 # --- Frame de Registro ---
