@@ -154,7 +154,7 @@ def registerUser():
 
 # --------------- LOGO APP ---------------------
 #-----------------------------------------------
-imgIcon = customtkinter.CTkImage(Image.open(".\\Images\\Logo.png"), size=(145, 50))
+imgIcon = customtkinter.CTkImage(Image.open("Images/Logo.png"), size=(145, 50))
 imgIcon_label = customtkinter.CTkLabel(app, image=imgIcon, text="", fg_color="grey")
 imgIcon_label.place(x=470, y=200)
 
