@@ -44,19 +44,22 @@ renderWindow(1280, 832, "GameON!")
 
 # ---------------ADEUS ---------------------
 #-----------------------------------------------------------------
+main_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="#2E2B2B", corner_radius=0)
+main_frame.pack(fill="both", expand=True)
+
 imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(450, 150))
-imgIcon_label = ctk.CTkLabel(app, image=imgIcon, text="")
+imgIcon_label = ctk.CTkLabel(main_frame, image=imgIcon, text="")
 imgIcon_label.place(relx=0.5, rely=0.35, anchor="center")
 
-msg_welcome_label = ctk.CTkLabel(app, text="SEE YOU LATER!", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
+msg_welcome_label = ctk.CTkLabel(main_frame, text="SEE YOU LATER!", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
 msg_welcome_label.place(relx=0.5, rely=0.50, anchor="center")
 
-loading_canvas = tk.Canvas(app, width=120, height=120, bg="black", bd=0, highlightthickness=0)
+loading_canvas = tk.Canvas(main_frame, width=120, height=120, bg="#2E2B2B", bd=0, highlightthickness=0)
 loading_canvas.place(relx=0.5, rely=0.65, anchor="center")
 
 update_loading_circle(loading_canvas, 0)
 
-msg_loading_label = ctk.CTkLabel(app, text="LOADING...", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
+msg_loading_label = ctk.CTkLabel(main_frame, text="LOADING...", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
 msg_loading_label.place(relx=0.5, rely=0.80, anchor="center")
 
 app.mainloop()

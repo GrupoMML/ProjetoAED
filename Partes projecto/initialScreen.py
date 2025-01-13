@@ -29,14 +29,17 @@ renderWindow(1280, 832, "GameON!")
 
 # ---------------ECRÃ INICIAL ---------------------
 #-----------------------------------------------------------------
+main_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="#2E2B2B", corner_radius=0)
+main_frame.pack(fill="both", expand=True)
+
 imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(450, 150))
-imgIcon_label = ctk.CTkLabel(app, image=imgIcon, text="")
+imgIcon_label = ctk.CTkLabel(main_frame, image=imgIcon, text="")
 imgIcon_label.place(relx=0.5, rely=0.35, anchor="center")
 
-initial_msg_label = ctk.CTkLabel(app,text="WELCOME TO YOUR FAVORITE PLACE TO PLAY GAMES!",font=ctk.CTkFont(size=24, weight="bold"),text_color="white")
+initial_msg_label = ctk.CTkLabel(main_frame,text="WELCOME TO YOUR FAVORITE PLACE TO PLAY GAMES!",font=ctk.CTkFont(size=24, weight="bold"),text_color="white")
 initial_msg_label.place(relx=0.5, rely=0.5, anchor="center")
 
-button_frame = ctk.CTkFrame(app,width=480, height=85, fg_color="#202020",  corner_radius=15)
+button_frame = ctk.CTkFrame(main_frame,width=480, height=85, fg_color="#202020",  corner_radius=15)
 button_frame.place(relx=0.5, rely=0.6, anchor="center")  
 
 initialBtn = ctk.CTkButton(button_frame,text="CLICK HERE IF YOU’RE ON!",text_color="black",fg_color="#FFA500",font=ctk.CTkFont(size=20, weight="bold"), hover_color="#FF5900",command=lambda: print("Button clicked!"),width=480,  height=85   )

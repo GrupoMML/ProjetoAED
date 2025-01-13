@@ -30,7 +30,7 @@ renderWindow(1280, 832, "GameON!")
 
 # ---------------AREA UTILIZADOR (QR CODE) ---------------------
 #-----------------------------------------------------------------
-main_frame = ctk.CTkFrame(app, width=800, height=510, fg_color="#2E2B2B")
+main_frame = ctk.CTkFrame(app, width=800, height=510, fg_color="#2E2B2B", corner_radius=15)
 main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
 imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(290, 100))

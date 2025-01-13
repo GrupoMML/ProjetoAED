@@ -27,9 +27,9 @@ app.configure(fg_color="black")
 app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
-# ---------------PÁGINA PRINCIPAL---------------------
+# ---------------WISHLIST---------------------
 #-----------------------------------------------------------------
-def homePage():
+def wishlistPage():
     for widget in app.winfo_children():
         widget.destroy()
         
@@ -60,45 +60,36 @@ def homePage():
     topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
     topbar.pack(side=ctk.TOP, fill=ctk.X)
     
-    home_label = ctk.CTkLabel(topbar, text="HOME", text_color="white", font=("Arial", 18))
-    home_label.pack(side=ctk.LEFT, padx=35)
+    discover_label = ctk.CTkLabel(topbar, text="WISHLIST", text_color="white", font=("Arial", 18))
+    discover_label.pack(side=ctk.LEFT, padx=35)
 
-    profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25, fg_color="#FFA500",
+    profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
                                    text="", hover_color="#FF5900")
     profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
 
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    # ---------------JOGO PRINCIPAL (JOGO 1)---------------------
-    #-----------------------------------------------------------------
-    game_section = ctk.CTkFrame(app, width=670, height=370, bg_color="#2E2B2B")
-    game_section.place(x=335, y=260)  
+    categories = ["ACTION", "ADVENTURE", "RPG"]
+    for idx, category in enumerate(categories):
+        category_label = ctk.CTkLabel(app, text=category, font=("Arial", 14, "bold"), text_color="white")
+        category_label.pack(anchor="w", padx=20, pady=10)
+    
+        games_frame = ctk.CTkFrame(app, fg_color="#101010")
+        games_frame.pack(fill="x", padx=20, pady=10)
 
-    imgGame = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(670, 370))  
-    imgGame_label = ctk.CTkLabel(game_section, image=imgGame, text="", fg_color="#2E2B2B")
-    imgGame_label.place(x=0, y=0) 
+        for i in range(3):
+            game_card = ctk.CTkFrame(games_frame, fg_color="#D9D9D9", width=250, height=295, corner_radius=10)
+            game_card.pack(side=ctk.LEFT, padx=30)
 
-    game_label = ctk.CTkLabel(app, text="ROCKET LEAGUE", text_color="white", font=("Arial", 16, "bold"))
-    game_label.place(x=335, y=640)  
+            game_label = ctk.CTkLabel(game_card, text=f"GAME {i + 1}", font=("Arial", 12, "bold"), text_color="black")
+            game_label.place(relx=0.5, rely=0.4, anchor="center")
 
-    game_price = ctk.CTkLabel(app, text="FREE", text_color="white", font=("Arial", 14, "bold"))
-    game_price.place(x=335, y=660)  
+            price_label = ctk.CTkLabel(game_card, text="Name game\nPrice", font=("Arial", 10), text_color="black")
+            price_label.place(relx=0.5, rely=0.7, anchor="center")
 
-    favorite_icon = ctk.CTkLabel(app, text="\u2764", text_color="#FF5900", font=("Arial", 16))
-    favorite_icon.place(x=500, y=650)
+            heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
+            heart_icon.place(relx=0.9, rely=0.9, anchor="center")
 
-    # ---------------JOGOS SECUNDÁRIOS (JOGOS 2 E 3)---------------------
-    #-----------------------------------------------------------------
-
-    imgGame2 = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(140, 140))
-    imgGame_label2 = ctk.CTkLabel(app, image=imgGame2, text="", fg_color="#2E2B2B")
-    imgGame_label2.place(x=1060, y=260)  
-
-    imgGame3 = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(140, 140))
-    imgGame_label3 = ctk.CTkLabel(app, image=imgGame3, text="", fg_color="#2E2B2B")
-    imgGame_label3.place(x=1060, y=490) 
-
-
-homePage()
+wishlistPage()
 app.mainloop()
