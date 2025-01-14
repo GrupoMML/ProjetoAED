@@ -54,10 +54,10 @@ def settingsPage():
     topbar.pack(side=ctk.TOP, fill=ctk.X)
     
     settings_label = ctk.CTkLabel(topbar, text="SETTINGS", text_color="white", font=("Arial", 18))
-    settings_label.pack(side=ctk.LEFT, padx=35)
+    settings_label.pack(side=ctk.LEFT, padx=35, pady=50)
 
     user_info_frame = ctk.CTkFrame(app, width=875, height=450, fg_color="black")
-    user_info_frame.place(x=370, y=180) 
+    user_info_frame.place(x=370, y=160) 
 
     profile_circle = ctk.CTkButton(user_info_frame, width=154, height=154, corner_radius=77, fg_color="#FFA500", text="", hover_color="#FF5900")
     profile_circle.place(x=5, y=0)
@@ -69,7 +69,7 @@ def settingsPage():
     personal_info.place(x=200, y=60)
 
     change_password_button = ctk.CTkButton(user_info_frame, text="CHANGE PASSWORD", text_color="white", fg_color="#383838", font=("Arial", 22), hover_color="#5A5A5A", width=169, height=33)
-    change_password_button.place(x=630, y=120)
+    change_password_button.place(x=620, y=120)
 
     notifications_frame= ctk.CTkFrame (app, width=875, height=51, corner_radius=10, fg_color="#FFA500")
     notifications_frame.place(x=370, y=340)
