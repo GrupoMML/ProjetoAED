@@ -24,7 +24,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 
@@ -33,7 +33,7 @@ renderWindow(1280, 832, "GameON!")
 main_frame = ctk.CTkFrame(app, width=800, height=510, fg_color="#2E2B2B")
 main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(290, 100))
+imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(290, 100))
 imgIcon_label = ctk.CTkLabel(app, image=imgIcon, text="", fg_color="#2E2B2B")
 imgIcon_label.place(x=500, y=200)
 
