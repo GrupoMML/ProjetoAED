@@ -7,6 +7,28 @@ import base64
 from tkinter import *
 from PIL import Image
 
+#-----------------------------------------------------------------
+#---------------FUNCOES ---------------------
+#-----------------------------------------------------------------
+def lerFicheiroUsers():
+    """
+    Função que lê o ficheiro users.txt e retorna a lista de utilizadores
+    """
+    fileUsers = open("users.txt", "r",encoding="utf-8")
+    listUsers = fileUsers.readlines()
+    fileUsers.close()
+    return listUsers
+def deleteAccount():
+    """
+    Função que apaga a conta do utilizador
+    """
+    listaUsers = lerFicheiroUsers()
+    for linha in listaUsers:
+        user = linha.split(",")[0]
+        if user == current_user:
+            
+
+
 # ---------------INICIO DA INTERFACE GRAFICA  ---------------------
 #-----------------------------------------------------------------
 def renderWindow(appWidth, appHeight, appTitle):
