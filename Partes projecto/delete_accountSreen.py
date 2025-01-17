@@ -6,26 +6,50 @@ import os
 import base64
 from tkinter import *
 from PIL import Image
-
+#importar o ficheiro readFiles.py
 #-----------------------------------------------------------------
 #---------------FUNCOES ---------------------
 #-----------------------------------------------------------------
-def lerFicheiroUsers():
-    """
-    Função que lê o ficheiro users.txt e retorna a lista de utilizadores
-    """
-    fileUsers = open("users.txt", "r",encoding="utf-8")
-    listUsers = fileUsers.readlines()
-    fileUsers.close()
-    return listUsers
 def deleteAccount():
     """
     Função que apaga a conta do utilizador
     """
     listaUsers = lerFicheiroUsers()
+
     for linha in listaUsers:
+
         user = linha.split(",")[0]
+
         if user == current_user:
+
+            listaJogos = lerFicheiroJogosFavoritos()
+            for linhaJogos in listaJogosFavoritos:
+                jogo = linhaJogos.split(";")
+                if jogo[1] == current_user:
+                    listaJogos.remove(linhaJogos)
+            fileJogosFavoritos = open("jogosFavoritos.txt", "w", encoding="utf-8")
+            fileJogosFavoritos.writelines(listaJogos)
+            fileJogosFavoritos.close()
+
+            listaComentarios = lerFicheiroComentarios()
+            for linhaComentarios in listaComentarios:
+                comentario = linhaComentarios.split(";")
+                if comentario[1] == current_user:
+                    listaComentarios.remove(linhaComentarios)
+            fileComentarios = open("comentarios.txt", "w", encoding="utf-8")
+            fileComentarios.writelines(listaComentarios)
+            fileComentarios.close()
+            
+            listaUsers.remove(linha)
+            fileUsers = open("users.txt", "w", encoding="utf-8")
+            fileUsers.writelines(listaUsers)
+            fileUsers.close()
+            
+            
+            messagebox.showinfo("Account Deleted", "Your account has been deleted successfully!")
+            app.destroy()
+
+
             
 
 
