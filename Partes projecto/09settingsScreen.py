@@ -65,7 +65,7 @@ def settingsPage():
     username_label = ctk.CTkLabel(user_info_frame, text="USERNAME", text_color="white", font=("Arial", 40, "bold"))
     username_label.place(x=200, y=10)
 
-    personal_info = ctk.CTkLabel(user_info_frame, text="PERSONAL EMAIL:\nNAME:\nCOUNTRY:", text_color="white", font=("Arial", 22), justify="left")
+    personal_info = ctk.CTkLabel(user_info_frame, text="PERSONAL EMAIL:\nNAME:", text_color="white", font=("Arial", 22), justify="left")
     personal_info.place(x=200, y=60)
 
     change_password_button = ctk.CTkButton(user_info_frame, text="CHANGE PASSWORD", text_color="white", fg_color="#383838", font=("Arial", 22), hover_color="#5A5A5A", width=169, height=33)

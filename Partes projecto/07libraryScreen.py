@@ -43,12 +43,20 @@ def libraryPage():
     button_frame = ctk.CTkFrame(sidebar)
     button_frame.pack(expand=True)
 
-    buttons = ["LIBRARY", "STORE", "WISHLIST", "DISCOVER"]
+    buttons = ["LIBRARY", "STORE", "DISCOVER"]
     for btn in buttons:
         button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
                             font=("Arial", 12), hover_color="#5A5A5A", command=lambda btn=btn: print(f"{btn}"),
                             width=247, height=44)
         button.pack(pady=5, padx=42)
+    """listaUsers = lerFicheiroUsers()
+    for user in listaUsers:
+        campos = user.split(";")
+        if campos[3] == "2": #verifica se tem permissao de administrador
+            button = ctk.CTkButton(button_frame, text="ADMIN", text_color="white", fg_color="#383838",
+                            font=("Arial", 12), hover_color="#5A5A5A", command=lambda btn=btn: print(f"{btn}"),
+                            width=247, height=44)
+            button.pack(pady=5, padx=42)"""
 
     profile_button_frame = ctk.CTkFrame(sidebar)
     profile_button_frame.pack(side=ctk.BOTTOM, pady=15)  
