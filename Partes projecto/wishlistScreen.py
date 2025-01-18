@@ -24,7 +24,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 # ---------------WISHLIST---------------------
@@ -36,7 +36,7 @@ def wishlistPage():
     sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
     sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
 
-    imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(200, 75))
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
     imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
     imgIcon_label.place(x=61, y=26)
 

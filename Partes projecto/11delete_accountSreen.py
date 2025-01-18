@@ -70,7 +70,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 

@@ -24,7 +24,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 # ---------------PÁGINA PRINCIPAL---------------------
@@ -36,7 +36,7 @@ def homePage():
     sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
     sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
 
-    imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(200, 75))
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
     imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
     imgIcon_label.place(x=61, y=26)
 
@@ -75,7 +75,7 @@ def homePage():
     game_section = ctk.CTkFrame(app, width=670, height=370, bg_color="#2E2B2B")
     game_section.place(x=335, y=260)  
 
-    imgGame = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(670, 370))  
+    imgGame = ctk.CTkImage(Image.open("Images/game.png"), size=(670, 370))  
     imgGame_label = ctk.CTkLabel(game_section, image=imgGame, text="", fg_color="#2E2B2B")
     imgGame_label.place(x=0, y=0) 
 
@@ -91,11 +91,11 @@ def homePage():
     # ---------------JOGOS SECUNDÁRIOS (JOGOS 2 E 3)---------------------
     #-----------------------------------------------------------------
 
-    imgGame2 = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(140, 140))
+    imgGame2 = ctk.CTkImage(Image.open("Images/game.png"), size=(140, 140))
     imgGame_label2 = ctk.CTkLabel(app, image=imgGame2, text="", fg_color="#2E2B2B")
     imgGame_label2.place(x=1060, y=260)  
 
-    imgGame3 = ctk.CTkImage(Image.open(".\\Images\\game.png"), size=(140, 140))
+    imgGame3 = ctk.CTkImage(Image.open("Images/game.png"), size=(140, 140))
     imgGame_label3 = ctk.CTkLabel(app, image=imgGame3, text="", fg_color="#2E2B2B")
     imgGame_label3.place(x=1060, y=490) 
 

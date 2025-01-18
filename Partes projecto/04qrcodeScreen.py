@@ -24,7 +24,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap(".\\Images\\1-f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 
@@ -33,7 +33,7 @@ renderWindow(1280, 832, "GameON!")
 main_frame = ctk.CTkFrame(app, width=800, height=510, fg_color="#2E2B2B", corner_radius=15)
 main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-imgIcon = ctk.CTkImage(Image.open(".\\Images\\Logo.png"), size=(290, 100))
+imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(290, 100))
 imgIcon_label = ctk.CTkLabel(app, image=imgIcon, text="", fg_color="#2E2B2B")
 imgIcon_label.place(x=500, y=200)
 
@@ -43,7 +43,7 @@ input_frame.place(relx=0.5, rely=0.9, anchor="center")
 msg_qrcode_label = ctk.CTkLabel(main_frame, text="SCAN & GO!", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
 msg_qrcode_label.place(relx=0.5, rely=0.3, anchor="center")
 
-imgQR = ctk.CTkImage(Image.open(".\\Images\\frame.png"), size=(239, 239))
+imgQR = ctk.CTkImage(Image.open("Images/frame.png"), size=(239, 239))
 imgQR_label = ctk.CTkLabel(main_frame, image=imgQR, text="", fg_color="#2E2B2B")
 imgQR_label.place(relx=0.5, rely=0.6, anchor="center") 
 
