@@ -6,6 +6,11 @@ import os
 import base64
 from tkinter import *
 from PIL import Image
+import readFiles #ficheiro de funcoes para ler ficheiros (que já agora da para melhorar para ser so uma funcao(trabalho futuro))
+import escolherImagem #ficheiro de funcoes para escolher imagem (por fazer) visto que vamos precisar de 2 funcionalidades semelhantes
+# ---------------FUNCOES ---------------------
+#-----------------------------------------------------------------
+
 
 # ---------------INICIO DA INTERFACE GRAFICA  ---------------------
 #-----------------------------------------------------------------
@@ -24,7 +29,7 @@ def renderWindow(appWidth, appHeight, appTitle):
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
-app.iconbitmap("Images1/f8c98aa8.ico")
+app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
 # ---------------SETTINGS---------------------
@@ -65,7 +70,7 @@ def settingsPage():
     username_label = ctk.CTkLabel(user_info_frame, text="USERNAME", text_color="white", font=("Arial", 40, "bold"))
     username_label.place(x=200, y=10)
 
-    personal_info = ctk.CTkLabel(user_info_frame, text="PERSONAL EMAIL:\nNAME:", text_color="white", font=("Arial", 22), justify="left")
+    personal_info = ctk.CTkLabel(user_info_frame, text="PERSONAL EMAIL:", text_color="white", font=("Arial", 22), justify="left")
     personal_info.place(x=200, y=60)
 
     change_password_button = ctk.CTkButton(user_info_frame, text="CHANGE PASSWORD", text_color="white", fg_color="#383838", font=("Arial", 22), hover_color="#5A5A5A", width=169, height=33)

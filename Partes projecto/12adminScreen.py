@@ -1,3 +1,6 @@
+
+#Futura página de admin :D
+
 # ---------------BIBLIOTECAS ---------------------
 #-----------------------------------------------------------------
 import customtkinter as ctk
@@ -27,9 +30,9 @@ app.configure(fg_color="black")
 app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1280, 832, "GameON!")
 
-# ---------------DISCOVER---------------------
+# ---------------WISHLIST---------------------
 #-----------------------------------------------------------------
-def discoverPage():
+def wishlistPage():
     for widget in app.winfo_children():
         widget.destroy()
         
@@ -60,7 +63,7 @@ def discoverPage():
     topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
     topbar.pack(side=ctk.TOP, fill=ctk.X)
     
-    discover_label = ctk.CTkLabel(topbar, text="DISCOVER", text_color="white", font=("Arial", 18))
+    discover_label = ctk.CTkLabel(topbar, text="WISHLIST", text_color="white", font=("Arial", 18))
     discover_label.pack(side=ctk.LEFT, padx=35)
 
     profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
@@ -70,17 +73,10 @@ def discoverPage():
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    discover_frame = ctk.CTkFrame(app, fg_color="#FFA500", height=296, width=874, corner_radius=10)
-    discover_frame.pack(pady=(20, 10))
-
-    discoverBtn = ctk.CTkButton(discover_frame, text="DISCOVER", text_color="black", fg_color="#FFA500",
-                                        font=("Arial", 22, "bold"), hover_color="#FF5900", command=app, width=874, height=296)
-    discoverBtn.place(relx=0.5, rely=0.5, anchor="center")
-
     categories = ["ACTION", "ADVENTURE", "RPG"]
     for idx, category in enumerate(categories):
         category_label = ctk.CTkLabel(app, text=category, font=("Arial", 14, "bold"), text_color="white")
-        category_label.pack(anchor="w", padx=20)
+        category_label.pack(anchor="w", padx=20, pady=10)
     
         games_frame = ctk.CTkFrame(app, fg_color="#101010")
         games_frame.pack(fill="x", padx=20, pady=10)
@@ -98,5 +94,5 @@ def discoverPage():
             heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
             heart_icon.place(relx=0.9, rely=0.9, anchor="center")
 
-discoverPage()
+wishlistPage()
 app.mainloop()

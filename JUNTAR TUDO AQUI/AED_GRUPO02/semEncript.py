@@ -609,7 +609,6 @@ def discoverPageUI():
             heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
             heart_icon.place(relx=0.9, rely=0.9, anchor="center")
 
-
 def settingsPageUI():
     # --------------DESIGN PÁGINA SETTINGS ---------------------
     #-----------------------------------------------------------------
