@@ -20,21 +20,21 @@ def deleteAccount():
 
         user = linha.split(",")[0]
 
-        if user == current_user:
+        if user == currentUser:
 
-            listaJogos = lerFicheiroJogosFavoritos()
-            for linhaJogos in listaJogosFavoritos:
-                jogo = linhaJogos.split(";")
-                if jogo[1] == current_user:
-                    listaJogos.remove(linhaJogos)
+            listaJogosFav = lerFicheiroJogosFavoritos()
+            for linhaJogoFav in listaJogosFav:
+                jogo = linhaJogoFav.split(";")
+                if jogo[1] == currentUser:
+                    listaJogosFav.remove(linhaJogoFav)
             fileJogosFavoritos = open("jogosFavoritos.txt", "w", encoding="utf-8")
-            fileJogosFavoritos.writelines(listaJogos)
+            fileJogosFavoritos.writelines(listaJogosFav)
             fileJogosFavoritos.close()
 
             listaComentarios = lerFicheiroComentarios()
             for linhaComentarios in listaComentarios:
                 comentario = linhaComentarios.split(";")
-                if comentario[1] == current_user:
+                if comentario[1] == currentUser:
                     listaComentarios.remove(linhaComentarios)
             fileComentarios = open("comentarios.txt", "w", encoding="utf-8")
             fileComentarios.writelines(listaComentarios)
