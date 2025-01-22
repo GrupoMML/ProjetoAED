@@ -36,7 +36,7 @@ def renderWindow(appWidth, appHeight, appTitle):
     x = (screenWidth / 2) - (appWidth / 2)
     y = (screenHeight / 2) - (appHeight / 2)
     app.geometry(f'{appWidth}x{appHeight}+{int(x)}+{int(y)}')
-    app.resizable(False, False)
+    app.resizable(True, True)
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
@@ -444,6 +444,7 @@ def storePageUI():
 def libraryPageUI():
     # --------------DESIGN PÁGINA BIBLIOTECA ---------------------
     #-----------------------------------------------------------------
+    
     library_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="black")
     library_frame.place(relx=0.5, rely=0.5, anchor="center")
     
@@ -597,7 +598,7 @@ def discoverPageUI():
 
 def settingsPageUI():
     # --------------DESIGN PÁGINA SETTINGS ---------------------
-    #-----------------------------------------------------------------
+    #-----------------------------------------------------------
     settings_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="black")
     settings_frame.place(relx=0.5, rely=0.5, anchor="center")
 
