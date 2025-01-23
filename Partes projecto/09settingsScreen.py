@@ -7,7 +7,6 @@ import base64
 from tkinter import *
 from PIL import Image
 import readFiles #ficheiro de funcoes para ler ficheiros (que já agora da para melhorar para ser so uma funcao(trabalho futuro))
-import escolherImagem #ficheiro de funcoes para escolher imagem (por fazer) visto que vamos precisar de 2 funcionalidades semelhantes
 # ---------------FUNCOES ---------------------
 #-----------------------------------------------------------------
 
