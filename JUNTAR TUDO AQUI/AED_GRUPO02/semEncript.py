@@ -10,6 +10,10 @@ import tkinter as tk
 import os
 from readFiles import *
 from PIL import Image
+import users
+import games
+import notifications
+import datetime
 
 # ---------------CRIAÇÃO DA PASTA USERS E CODIFICAÇÃO DA INFORMAÇÃO ---------------------
 #-----------------------------------------------------------------
@@ -53,46 +57,6 @@ def showFrame(frame):
 
 # ---------------PARTES LOGIN---------------------
 #-----------------------------------------------------------------
-def loginFunction(username_entry,password_entry):
-    # --------------FUNCIONALIDES LOGIN ---------------------
-    #-----------------------------------------------------------------
-    global currentUser
-    login_input = username_entry.get().strip()  
-    password = password_entry.get().strip() 
-
-    if login_input and password:
-        if '@' in login_input:
-            userFound = False
-            listaUsers = lerFicheiroUsers()
-            for user in listaUsers:
-                campos = user.split(";")
-                if campos[2] == login_input:
-                    if campos[1] == password:
-                        currentUser = campos[0]
-                        userFound = True
-                        welcomeUI()
-                    else:
-                        messagebox.showerror("Error", "Wrong password.")
-                    break
-            if not userFound:
-                messagebox.showerror("Error", "Email not found.")
-        else:
-            userFound = False
-            listaUsers = lerFicheiroUsers()
-            for user in listaUsers:
-                campos = user.split(";")
-                if campos[0] == login_input:
-                    if campos[1] == password:
-                        currentUser = campos[0]
-                        welcomeUI()
-                    else:
-                        messagebox.showerror("Error", "Wrong password.")
-                    break
-            if not userFound:
-                messagebox.showerror("Error", "Username not found.")
-    else:
-        messagebox.showwarning("Warning", "Fill all the fields.")
-        
 def loginUI():
     # --------------DESIGN LOGIN ---------------------
     #-----------------------------------------------------------------
@@ -120,7 +84,7 @@ def loginUI():
     button_frame.pack(pady=(20, 20), anchor="center")
 
     loginBtn = ctk.CTkButton(button_frame, text="LOGIN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:loginFunction(username_entry,password_entry))
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:users.loginFunction(username_entry, password_entry))
     loginBtn.pack(side="left", padx=5, anchor="center")
 
     signinBtn = ctk.CTkButton(button_frame, text="SIGN IN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
@@ -137,37 +101,6 @@ def loginUI():
     
 # ---------------PARTES SIGN IN---------------------
 #-----------------------------------------------------------------
-def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
-    # --------------FUNCIONALIDES SIGN IN ---------------------
-    #-----------------------------------------------------------------
-    newUsername = newUsernameEntry.get().strip()
-    newEmail = newEmailEntry.get().strip()
-    newPassword = newPasswordEntry.get().strip()
-    
-    if newUsername and newEmail and newPassword:
-        if '@' not in newEmail:
-            messagebox.showwarning("Warning", "Please enter a valid email address with '@'.")
-            return
-        listaUsers = lerFicheiroUsers()
-        userFound = False
-        for user in listaUsers:
-            campos = user.split(";")
-            if campos[0] == newUsername:
-                userFound = True
-                break
-            if campos[2] == newEmail:
-                userFound = True
-                break
-        if not userFound:
-            fileUsers = open("files/users.txt", "a")
-            fileUsers.write(f"{newUsername};{newPassword};{newEmail};1\n")
-            fileUsers.close()
-            messagebox.showinfo("Success", "User created successfully.")
-            loginUI()
-        if userFound:
-            messagebox.showerror("Error", "User already exists.")
-    else:
-        messagebox.showwarning("Warning", "Fill all the fields.")
 
 def signinUI():
     # --------------DESIGN SIGN IN ---------------------
@@ -201,7 +134,7 @@ def signinUI():
     button_frame.pack(pady=(20, 20), anchor="center")
 
     signinBtn = ctk.CTkButton(button_frame, text="SIGN IN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: signinFunction(username_entry, email_entry, password_entry))
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: users.signinFunction(username_entry, email_entry, password_entry))
     signinBtn.pack(side="left", padx=5, anchor="center")
 
     backBtn = ctk.CTkButton(button_frame, text="BACK", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
@@ -682,6 +615,82 @@ def settingsPageUI():
 
     deleteAccountBtn= ctk.CTkButton(app, text="DELETE ACCOUNT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=875, height=35)
     deleteAccountBtn.place(x=370, y=750)
+"""
+def adminPageUI():
+    # --------------DESIGN PÁGINA ADMIN ---------------------
+    #-----------------------------------------------------------------
+    admin_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="black")
+    admin_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+    sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
+    imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
+    imgIcon_label.place(x=61, y=26)
+
+    button_frame = ctk.CTkFrame(sidebar)
+    button_frame.pack(expand=True)
+
+    buttons = ["LIBRARY", "STORE", "DISCOVER"]
+    for btn in buttons:
+        if btn == "LIBRARY":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:libraryPageUI(),
+                                width=247, height=44)
+        elif btn == "STORE":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:storePageUI(),
+                                width=247, height=44)
+        else:  
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:discoverPageUI(),
+                                width=247, height=44)
+        button.pack(pady=5, padx=42)
+
+    topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
+    topbar.pack(side=ctk.TOP, fill=ctk.X)
+    
+    admin_label = ctk.CTkLabel(topbar, text="ADMIN", text_color="white", font=("Arial", 18))
+
+def createUsersUI():
+    # --------------DESIGN PÁGINA CRIAR UTILIZADOR ---------------------
+    #-----------------------------------------------------------------
+    create_frame = ctk.CTkFrame(app, width=1280, height=832, fg_color="black")
+    create_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+    sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
+    imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
+    imgIcon_label.place(x=61, y=26)
+
+    button_frame = ctk.CTkFrame(sidebar)
+    button_frame.pack(expand=True)
+
+    buttons = ["LIBRARY", "STORE", "DISCOVER"]
+    for btn in buttons:
+        if btn == "LIBRARY":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:libraryPageUI(),
+                                width=247, height=44)
+        elif btn == "STORE":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:storePageUI(),
+                                width=247, height=44)
+        else:  
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:discoverPageUI(),
+                                width=247, height=44)
+        button.pack(pady=5, padx=42)
+
+    topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
+    topbar.pack(side=ctk.TOP, fill=ctk.X)
+    
+    create_label = ctk.CTkLabel(topbar, text="CREATE USER", text_color="white", font=("Arial", 18))
+
+"""
 
 
 # --------------ECRÃ INICIAL ---------------------
@@ -705,3 +714,4 @@ initialBtn.place(relx=0.5, rely=0.5, anchor="center")
 # ---------------FIM DA FUNÇÃO DA APP ---------------------
 #-----------------------------------------------------------------
 app.mainloop()
+users.userLogout() 

@@ -138,7 +138,7 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
                 newPasswordEntry.delete(0, "end")
                 return
 
-def logout():
+def userLogout():
     """
     Função que faz logout do utilizador
     Nesta função é atualizada a data do último logout do utilizador
@@ -157,6 +157,6 @@ def logout():
             messagebox.showinfo("Success", "Logged out successfully!")
             app.destroy()
             return
-        
+            
 
             

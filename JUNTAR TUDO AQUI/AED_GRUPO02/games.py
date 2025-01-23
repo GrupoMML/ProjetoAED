@@ -8,8 +8,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import os
-
-
+import notifications as ntf
+import users
 
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
@@ -32,7 +32,7 @@ def addGame():
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
         #chamar função de notificações
-        addNotification(nomeJogo,genero)
+        ntf.addNotification(nomeJogo,genero)
         file = open("jogos.txt", "a", encoding="utf-8")
         file.write(f"{nomeJogo};{genero};{preco};{descricao};{dataLancamento};{classificacao};{plataforma};{imagem}\n")
         file.close()
@@ -54,8 +54,8 @@ def deleteGame():
     if nomeJogo == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        deleteNotification(nomeJogo)
-        listaJogos = lerFicheiroJogos()
+        ntf.deleteNotification(nomeJogo)
+        listaJogos = users.lerFicheiroJogos()
         for linha in listaJogos:
             jogo = linha.split(";")
             if jogo[0] == nomeJogo:
@@ -69,7 +69,7 @@ def deleteGame():
         else:
             messagebox.showerror("Error", "Game not found!")
 
-def editarJogo():
+def editGame():
     """
     Função que edita um jogo da lista de jogos
     """
@@ -84,7 +84,7 @@ def editarJogo():
     if nomeJogo == "" or genero == "" or preco == "" or descricao == "" or dataLancamento == "" or classificacao == "" or plataforma == "" or imagem == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaJogos = lerFicheiroJogos()
+        listaJogos = users.lerFicheiroJogos()
         for idx, linha in enumerate(listaJogos):
             jogo = linha.split(";")
             if jogo[0] == nomeJogo and jogo[1] == genero and jogo[2] == preco and jogo[3] == descricao and jogo[4] == dataLancamento and jogo[5] == classificacao and jogo[6] == plataforma and jogo[7] == imagem:
@@ -114,7 +114,7 @@ def addGameFav(nomeJogo, currentUser,generoJogo):
     if nomeJogo == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaJogos = lerFicheiroJogos()
+        listaJogos = users.lerFicheiroJogos()
         for linha in listaJogos:
             jogo = linha.split(";")
             if jogo[0] == nomeJogo:
@@ -133,7 +133,7 @@ def deleteGameFav(nomeJogo, currentUser):
     if nomeJogo == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaJogosFav = lerFicheiroJogosFavoritos()
+        listaJogosFav = users.lerFicheiroJogosFavoritos()
         for linha in listaJogosFav:
             jogo = linha.split(";")
             if jogo[1] == nomeJogo and jogo[0] == currentUser:

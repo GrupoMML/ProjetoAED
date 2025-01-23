@@ -50,16 +50,6 @@ def addNotification(nomeJogo, genero):
     file.write(f"{nomeJogo};{genero};{dataCriacao}\n")
     file.close()
 
-#função que lê o ficheiro notificacoes.txt e retorna uma lista com todas as notificações
-def lerFicheiroNotificacoes():
-    """
-    Função que lê o ficheiro notificacoes.txt e retorna uma lista com todas as notificações
-    """
-    file = open("notificacoes.txt", "r", encoding="utf-8")
-    listaNotificacoes = file.readlines()
-    file.close()
-    return listaNotificacoes
-
 #função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
 def verificarGeneroJogosFavoritos(genero):
     """
