@@ -67,11 +67,7 @@ def editGame():
     """
     nomeJogo = entryNomeJogo.get()
     genero = entryGenero.get()
-    preco = entryPreco.get()
     descricao = entryDescricao.get("1.0", "end-1c")
-    dataLancamento = entryDataLancamento.get()
-    classificacao = entryClassificacao.get()
-    plataforma = entryPlataforma.get()
     imagem = entryImagem.get()
     if nomeJogo == "" or genero == "" or preco == "" or descricao == "" or dataLancamento == "" or classificacao == "" or plataforma == "" or imagem == "":
         messagebox.showerror("Error", "Please fill in all fields!")
@@ -87,11 +83,7 @@ def editGame():
                 messagebox.showinfo("Success", "Game edited successfully!")
                 entryNomeJogo.delete(0, "end")
                 entryGenero.delete(0, "end")
-                entryPreco.delete(0, "end")
                 entryDescricao.delete("1.0", "end")
-                entryDataLancamento.delete(0, "end")
-                entryClassificacao.delete(0, "end")
-                entryPlataforma.delete(0, "end")
                 entryImagem.delete(0, "end")
                 break
         else:

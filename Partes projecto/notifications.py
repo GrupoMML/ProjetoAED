@@ -96,11 +96,11 @@ def mostrarNotificacoes():
     """
     Função que apresenta as notificações na scrollbox
     """
-    notificationList = lerFicheiroNotificacoes()
+    notificationList = rf.lerFicheiroNotificacoes()
     for line in notificationList:
         notification = line.split(";")
         if verificarGeneroJogosFavoritos(notification[1]) and verificarDataUltimoLogout(notification[2]):
-            notificationFrame.insert("end", f"Game: {notification[0]}\nGenre: {notification[1]}\nDate: {notification[2]}\n\n")
+            notificationsFrame.insert("end", f"Game: {notification[0]}\nGenre: {notification[1]}\nDate: {notification[2]}\n\n")
 
 
 
@@ -112,7 +112,7 @@ def deleteNotification(gameName):
     notificationList = rf.lerFicheiroNotificacoes()
     for line in notificationList:
         notificacao = line.split(";")
-        if notificacao[0] == nomeJogo:
+        if notificacao[0] == gameName:
             notificationList.remove(line)
     file = open("notifications.txt", "w", encoding="utf-8")
     file.writelines(notificationList)
@@ -122,9 +122,4 @@ def clearNotifications():
     """
     Função que limpa as notificações da scrollbox
     """
-    scrollNotificacoes.delete(1.0, "end")
-
-
-
-
-
+    notificationsFrame.delete(1.0, "end")
