@@ -25,6 +25,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 import datetime
+import readFiles as rf
 
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
@@ -51,28 +52,30 @@ def addNotification(nomeJogo, genero):
     file.close()
 
 #função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
-def verificarGeneroJogosFavoritos(genero):
+def verificarGeneroJogosFavoritos(genre, currentUser):
     """
     Função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
     """
-    listaJogosFavoritos = lerFicheiroJogosFavoritos()
-    for linha in listaJogosFavoritos:
-        jogo = linha.split(";")
-        if jogo[1] == currentUser and jogo[2] == genero:
+    listFavGames = rf.lerFicheiroJogosFavoritos()
+    for line in listFavGames:
+        game = line.split(";")
+        if game[1] == currentUser and game[2] == genre:
             return True
     return False
 
 #função que verifica se a data do ultimo logout é inferior à data de criação da notificação
-def verificarDataUltimoLogout(dataCriacao):
+def verificarDataUltimoLogout(creationDate, currentUser):
     """
     Função que verifica se a data do ultimo logout é inferior à data de criação da notificação
     """
-    listaUsers = lerFicheiroUsers()
-    for linha in listaUsers:
-        user = linha.split(";")
+    usersList = rf.lerFicheiroUsers()
+    for line in usersList:
+        user = line.split(";")
         if user[0] == currentUser:
-            dataUltimoLogout = user[4]
-            if dataUltimoLogout < dataCriacao:
+            lastLogoutDate = user[4]
+            lastLogoutDate = datetime.datetime.strptime(lastLogoutDate, "%d-%m-%Y %H:%M:%S")
+            creationDate = datetime.datetime.strptime(creationDate, "%d-%m-%Y %H:%M:%S")
+            if lastLogoutDate < creationDate:
                 return True
     return False
 
@@ -81,10 +84,10 @@ def verificarNotificacoes():
     """
     Função que verifica se o utilizador tem notificações para apresentar
     """
-    listaNotificacoes = lerFicheiroNotificacoes()
-    for linha in listaNotificacoes:
-        notificacao = linha.split(";")
-        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
+    notificationList = rf.lerFicheiroNotificacoes()
+    for line in notificationList:
+        notification = line.split(";")
+        if verificarGeneroJogosFavoritos(notification[1]) and verificarDataUltimoLogout(notification[2]):
             return True
     return False
 
@@ -93,26 +96,26 @@ def mostrarNotificacoes():
     """
     Função que apresenta as notificações na scrollbox
     """
-    listaNotificacoes = lerFicheiroNotificacoes()
-    for linha in listaNotificacoes:
-        notificacao = linha.split(";")
-        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
-            scrollNotificacoes.insert("end", f"Game: {notificacao[0]}\nGenre: {notificacao[1]}\nDate: {notificacao[2]}\n\n")
+    notificationList = lerFicheiroNotificacoes()
+    for line in notificationList:
+        notification = line.split(";")
+        if verificarGeneroJogosFavoritos(notification[1]) and verificarDataUltimoLogout(notification[2]):
+            notificationFrame.insert("end", f"Game: {notification[0]}\nGenre: {notification[1]}\nDate: {notification[2]}\n\n")
 
 
 
 #função que apaga uma notificação do ficheiro notificacoes.txt
-def deleteNotification(nomeJogo):
+def deleteNotification(gameName):
     """
     Função que apaga uma notificação do ficheiro notificacoes.txt
     """
-    listaNotificacoes = lerFicheiroNotificacoes()
-    for linha in listaNotificacoes:
-        notificacao = linha.split(";")
+    notificationList = rf.lerFicheiroNotificacoes()
+    for line in notificationList:
+        notificacao = line.split(";")
         if notificacao[0] == nomeJogo:
-            listaNotificacoes.remove(linha)
-    file = open("notificacoes.txt", "w", encoding="utf-8")
-    file.writelines(listaNotificacoes)
+            notificationList.remove(line)
+    file = open("notifications.txt", "w", encoding="utf-8")
+    file.writelines(notificationList)
     file.close()
 
 def clearNotifications():

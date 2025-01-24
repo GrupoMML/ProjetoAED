@@ -35,10 +35,10 @@ def lerFicheiroNotificacoes():
     """
     Função que lê o ficheiro notificacoes.txt e retorna a lista de notificações
     """
-    fileNotificacoes = open("notificacoes.txt", "r",encoding="utf-8")
-    listNotificacoes = fileNotificacoes.readlines()
-    fileNotificacoes.close()
-    return listNotificacoes
+    fNotifications = open("notifications.txt", "r",encoding="utf-8")
+    lNotifications = fNotifications.readlines()
+    fNotifications.close()
+    return lNotifications
 
 #jogosFavoritos.txt
 def lerFicheiroJogosFavoritos():
