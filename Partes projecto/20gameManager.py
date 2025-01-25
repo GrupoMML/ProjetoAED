@@ -27,9 +27,9 @@ app.configure(fg_color="black")
 app.iconbitmap("Images/1-f8c98aa8.ico")
 renderWindow(1180, 732, "GameON!")
 
-# ---------------PÁGINA GESTOR UTILIZADORES---------------------
+# ---------------PÁGINA GESTOR JOGOS---------------------
 #-----------------------------------------------------------------
-def usersManager():
+def gameManager():
     for widget in app.winfo_children():
         widget.destroy()
         
@@ -87,5 +87,5 @@ def usersManager():
                               width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
     deleteBtn.pack(side="left", padx=10)
 
-usersManager()
+gameManager()
 app.mainloop()
