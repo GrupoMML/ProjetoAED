@@ -53,7 +53,7 @@ def gameManager():
     topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
     topbar.pack(side=ctk.TOP, fill=ctk.X)
     
-    userManager_label = ctk.CTkLabel(topbar, text="USER MANAGER", text_color="white", font=("Arial", 18))
+    userManager_label = ctk.CTkLabel(topbar, text="GAME MANAGER", text_color="white", font=("Arial", 18))
     userManager_label.pack(side=ctk.LEFT, padx=35, pady=50)
 
     tree_frame = ctk.CTkFrame(app, fg_color="black")
