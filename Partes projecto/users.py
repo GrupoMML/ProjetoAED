@@ -8,24 +8,24 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 import datetime
-
+import readFiles as rf
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
 
 # ADMINISTRADOR:
 
-def addUser():
+def addUser(entryUsername,entryEmail,entryPassword,entryPermLevel):
     """
     Função que adiciona um utilizador à lista de utilizadores
     """
     username = entryUsername.get()
     email = entryEmail.get()
     password = entryPassword.get()
-    nivelPerm = entryNivelPerm.get()
+    nivelPerm = entryPermLevel.get()
     if username == "" or email == "" or password == "" or nivelPerm == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             camposUser = linha.split(";")
             if camposUser[0] == username:
@@ -48,10 +48,10 @@ def addUser():
                 entryUsername.delete(0, "end")
                 entryEmail.delete(0, "end")
                 entryPassword.delete(0, "end")
-                entryNivelPerm.delete(0, "end")
+                entryPermLevel.delete(0, "end")
                 return
 
-def deleteUser():
+def deleteUser(entryUsername):
     """
     Função que apaga um utilizador da lista de utilizadores
     """
@@ -59,7 +59,7 @@ def deleteUser():
     if username == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             user = linha.split(";")
             if user[0] == username:
@@ -72,33 +72,29 @@ def deleteUser():
                 return
         messagebox.showerror("Error", "User not found!")
 
-def editUser():
+def editUser(uName,uEmail,uPassword,uPermLevel):
     """
     Função que edita um utilizador da lista de utilizadores
     """
-    username = entryUsername.get()
-    email = entryEmail.get()
-    password = entryPassword.get()
-    nivelPerm = entryNivelPerm.get()
-    if username == "" or email == "" or password == "" or nivelPerm == "":
+    if uName == "" or uEmail == "" or uPassword == "" or uPermLevel == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
-        for linha in listaUsers:
-            user = linha.split(";")
-            if user[0] == username:
-                listaUsers.remove(linha)
+        lUsers = rf.lerFicheiroUsers()
+        for line in lUsers:
+            user = line.split(";")
+            if user[0] == uName:
+                lUsers.remove(line)
                 file = open("users.txt", "w", encoding="utf-8")
-                file.writelines(listaUsers)
+                file.writelines(lUsers)
                 file.close()
                 file = open("users.txt", "a", encoding="utf-8")
-                file.write(f"{username};{email};{password};{nivelPerm}\n")
+                file.write(f"{uName};{uEmail};{uPassword};{uPermLevel};\n")
                 file.close()
                 messagebox.showinfo("Success", "User edited successfully!")
                 entryUsername.delete(0, "end")
                 entryEmail.delete(0, "end")
                 entryPassword.delete(0, "end")
-                entryNivelPerm.delete(0, "end")
+                entryPermLevel.delete(0, "end")
                 return
         messagebox.showerror("Error", "User not found!")
 
@@ -113,7 +109,7 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
     if username == "" or email == "" or password == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             camposUser = linha.split(";")
             if camposUser[0] == username:
@@ -130,7 +126,7 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
                 return
             else:
                 file = open("users.txt", "a", encoding="utf-8")
-                file.write(f"{username};{email};{password};user\n")
+                file.write(f"{username};{email};{password};1;\n")
                 file.close()
                 messagebox.showinfo("Success", "User added successfully!")
                 newUsernameEntry.delete(0, "end")
@@ -138,14 +134,14 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
                 newPasswordEntry.delete(0, "end")
                 return
 
-def userLogout():
+def userLogout(currentUser,app):
     """
     Função que faz logout do utilizador
     Nesta função é atualizada a data do último logout do utilizador
     caso o utilizador não tenha feito logout adiciona a data de logout quando
     o mesmo fizer logout
     """
-    listaUsers = lerFicheiroUsers()
+    listaUsers = rf.lerFicheiroUsers()
     for linha in listaUsers:
         user = linha.split(";")
         if user[0] == currentUser:

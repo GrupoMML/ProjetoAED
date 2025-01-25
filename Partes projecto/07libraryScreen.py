@@ -73,10 +73,15 @@ def libraryPage():
 
     profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
                                    text="", hover_color="#FF5900")
-    profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
+    profile_circle.pack(side=ctk.RIGHT, padx=15, pady=30)
 
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command="")
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+    
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
-    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+    search_entry.pack(side=ctk.RIGHT, pady=50) 
+
+    
 
     categories = ["ACTION", "ADVENTURE", "RPG"]
     for idx, category in enumerate(categories):

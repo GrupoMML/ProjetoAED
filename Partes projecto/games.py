@@ -10,7 +10,8 @@ from tkinter import messagebox
 import os
 import notifications as ntf
 import users
-
+import readFiles as rf
+import re
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
 
@@ -76,7 +77,7 @@ def editGame():
         for idx, linha in enumerate(listaJogos):
             jogo = linha.split(";")
             if jogo[0] == nomeJogo and jogo[1] == genero and jogo[2] == preco and jogo[3] == descricao and jogo[4] == dataLancamento and jogo[5] == classificacao and jogo[6] == plataforma and jogo[7] == imagem:
-                listaJogos[idx] = f"{nomeJogo};{genero};{preco};{descricao};{dataLancamento};{classificacao};{plataforma};{imagem}\n"
+                listaJogos[idx] = f"{nomeJogo};{genero};{descricao};{imagem}\n"
                 file = open("jogos.txt", "w", encoding="utf-8")
                 file.writelines(listaJogos)
                 file.close()
@@ -141,3 +142,21 @@ def addComentario(nomeJogo, currentUser, comentario):
         file.write(f"{nomeJogo};{currentUser};{comentario}\n")
         file.close()
         messagebox.showinfo("Success", "Comment added successfully!")
+
+def searchBar(gameSearch):
+    """
+    Função que pesquisa um jogo na lista de jogos
+    """
+    
+    if gameSearch == "":
+        messagebox.showerror("Error", "Please fill in all fields!")
+    else:
+        
+        gamesList = users.lerFicheiroJogos()
+        for line in gamesList:
+            game = line.split(";")
+            if re.search(gameSearch, game[0], re.IGNORECASE):
+                
+                
+        else:
+            messagebox.showerror("Error", "Game not found!")
