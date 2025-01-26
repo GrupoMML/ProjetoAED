@@ -145,17 +145,12 @@ def addComentario(nomeJogo, currentUser, comentario):
 
 def searchBar(gameSearch):
     """
-    Função que pesquisa um jogo na lista de jogos
+    Função que pesquisa por jogos na lista de jogos que correspondam ao texto inserido pelo utilizador na barra de pesquisa 
+    e apresenta-os na scrollbox de jogos apenas a imagem e o nome do jogo
     """
-    
-    if gameSearch == "":
-        messagebox.showerror("Error", "Please fill in all fields!")
-    else:
-        gamesList = users.lerFicheiroJogos()
-        for line in gamesList:
-            game = line.split(";")
-            if re.search(gameSearch, game[0], re.IGNORECASE):
-                
-                
-        else:
-            messagebox.showerror("Error", "Game not found!")
+    listaJogos = users.lerFicheiroJogos()
+    for linha in listaJogos:
+        jogo = linha.split(";")
+        if re.search(gameSearch, jogo[0], re.IGNORECASE):
+            scrollJogos.insert("end", f"{jogo[0]}\n")
+            scrollJogos.insert("end", f"{jogo[7]}\n\n")

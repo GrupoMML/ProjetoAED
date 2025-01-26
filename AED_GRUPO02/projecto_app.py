@@ -7,8 +7,9 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 import os
-import base64
 from PIL import Image
+import base64
+
 
 # ---------------CRIAÇÃO DA PASTA USERS E CODIFICAÇÃO DA INFORMAÇÃO ---------------------
 #-----------------------------------------------------------------
@@ -332,13 +333,6 @@ def storePageUI():
 
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
-
-    suggest_frame = ctk.CTkFrame(app, fg_color="#FFA500", height=190, width=674, corner_radius=100)
-    suggest_frame.pack(pady=(20, 10))
-
-    suggestBtn = ctk.CTkButton(suggest_frame, text="SUGGEST GAMES", text_color="black", fg_color="#FFA500",
-                                        font=("Arial", 22, "bold"), hover_color="#FF5900", command=app, width=874, height=190)
-    suggestBtn.place(relx=0.5, rely=0.5, anchor="center")
 
     categories = ["ACTION", "ADVENTURE", "RPG"]
     for idx, category in enumerate(categories):

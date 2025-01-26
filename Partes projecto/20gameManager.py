@@ -43,7 +43,7 @@ def gameManager():
     button_frame = ctk.CTkFrame(sidebar)
     button_frame.pack(expand=True)
 
-    buttons = ["LIBRARY", "STORE", "DISCOVER"]
+    buttons = ["STORE", "LIBRARY", "ADMIN"]
     for btn in buttons:
         button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda: "",
@@ -79,9 +79,9 @@ def gameManager():
                            width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
     addBtn.pack(side="left", padx=10)
 
-    editBtn = ctk.CTkButton(button_frame, text="EDIT", fg_color="#FFA500", hover_color="#FF5900", 
+    """editBtn = ctk.CTkButton(button_frame, text="EDIT", fg_color="#FFA500", hover_color="#FF5900", 
                             width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
-    editBtn.pack(side="left", padx=10)
+    editBtn.pack(side="left", padx=10)"""
 
     deleteBtn = ctk.CTkButton(button_frame, text="DELETE", fg_color="#FFA500", hover_color="#FF5900", 
                               width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")

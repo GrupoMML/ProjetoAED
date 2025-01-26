@@ -8,7 +8,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import os
-import notifications as ntf
+import AED_GRUPO02.funcoes.notifications as ntf
 import users
 
 # ---------------FUNCOES ---------------------
@@ -22,11 +22,7 @@ def addGame():
     """
     nomeJogo = entryNomeJogo.get()
     genero = entryGenero.get()
-    preco = entryPreco.get()
     descricao = entryDescricao.get("1.0", "end-1c")
-    dataLancamento = entryDataLancamento.get()
-    classificacao = entryClassificacao.get()
-    plataforma = entryPlataforma.get()
     imagem = entryImagem.get()
     if nomeJogo == "" or genero == "" or preco == "" or descricao == "" or dataLancamento == "" or classificacao == "" or plataforma == "" or imagem == "":
         messagebox.showerror("Error", "Please fill in all fields!")
@@ -157,3 +153,22 @@ def addComentario(nomeJogo, currentUser, comentario):
         file.write(f"{nomeJogo};{currentUser};{comentario}\n")
         file.close()
         messagebox.showinfo("Success", "Comment added successfully!")
+
+def showFavGames(currentUser):
+    """
+    Função que apresenta os jogos favoritos do utilizador
+    """
+    listaJogosFav = users.lerFicheiroJogosFavoritos()
+    for linha in listaJogosFav:
+        jogo = linha.split(";")
+        if jogo[0] == currentUser:
+            scrollFavGames.insert("end", f"Game: {jogo[1]}\nGenre: {jogo[2]}\n\n")
+
+def showGames():
+    """
+    Função que apresenta 
+    """
+    listaJogos = users.lerFicheiroJogos()
+    for linha in listaJogos:
+        jogo = linha.split(";")
+        scrollGames.insert("end", f"Game: {jogo[0]}\nGenre: {jogo[1]}\nPrice: {jogo[2]}\nDescription: {jogo[3]}\nRelease Date: {jogo[4]}\nRating: {jogo[5]}\nPlatform: {jogo[6]}\n\n")

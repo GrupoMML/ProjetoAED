@@ -70,33 +70,16 @@ def storePage():
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    suggest_frame = ctk.CTkFrame(app, fg_color="#FFA500", height=190, width=874, corner_radius=10)
-    suggest_frame.pack(pady=(20, 10))
-
-    suggestBtn = ctk.CTkButton(suggest_frame, text="SUGGEST GAMES", text_color="black", fg_color="#FFA500",
-                                        font=("Arial", 22, "bold"), hover_color="#FF5900", command=app, width=874, height=190)
-    suggestBtn.place(relx=0.5, rely=0.5, anchor="center")
-
-    categories = ["ACTION", "ADVENTURE", "RPG"]
-    for idx, category in enumerate(categories):
-        category_label = ctk.CTkLabel(app, text=category, font=("Arial", 14, "bold"), text_color="white")
-        category_label.pack(anchor="w", padx=20)
     
-        games_frame = ctk.CTkFrame(app, fg_color="#101010")
-        games_frame.pack(fill="x", padx=20, pady=10)
+    games_frame = ctk.CTkFrame(app, fg_color="#101010")
+    games_frame.pack(fill="x", padx=20, pady=10)
 
-        for i in range(3):
-            game_card = ctk.CTkFrame(games_frame, fg_color="#D9D9D9", width=250, height=295, corner_radius=10)
-            game_card.pack(side=ctk.LEFT, padx=30)
+    for i in range(3):
+        game_card = ctk.CTkFrame(games_frame, fg_color="#D9D9D9", width=250, height=295, corner_radius=10)
+        game_card.pack(side=ctk.BOTTOM, padx=10)
 
-            game_label = ctk.CTkLabel(game_card, text=f"GAME {i + 1}", font=("Arial", 12, "bold"), text_color="black")
-            game_label.place(relx=0.5, rely=0.4, anchor="center")
-
-            price_label = ctk.CTkLabel(game_card, text="Name game\nPrice", font=("Arial", 10), text_color="black")
-            price_label.place(relx=0.5, rely=0.7, anchor="center")
-
-            heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
-            heart_icon.place(relx=0.9, rely=0.9, anchor="center")
+        game_label = ctk.CTkLabel(games_frame, text=f"GAME {i + 1}", font=("Arial", 12, "bold"), text_color="White")
+        game_label.pack(side=ctk.BOTTOM, pady=10)
 
 storePage()
 app.mainloop()
