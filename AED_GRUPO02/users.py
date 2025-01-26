@@ -8,6 +8,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 import datetime
+import readFiles as rf
 
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
@@ -137,6 +138,20 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
                 newEmailEntry.delete(0, "end")
                 newPasswordEntry.delete(0, "end")
                 return
+            
+def userLogin(username, password):
+    """
+    Função que faz login do utilizador
+    """
+    listaUsers = rf.lerFicheiroUsers()
+    for linha in listaUsers:
+        user = linha.split(";")
+        if user[0] == username and user[2] == password:
+            global currentUser
+            currentUser = username
+            messagebox.showinfo("Success", "Logged in successfully!")
+            return
+    messagebox.showerror("Error", "Invalid username or password!")
 
 def userLogout():
     """
