@@ -631,12 +631,15 @@ def addGameUI():
     addGameName_entry = ctk.CTkEntry(app, fg_color="white", width=290, height=37, border_color="black", corner_radius=5, 
                             placeholder_text="Game Name", placeholder_text_color="black", text_color="black",
                             font=("Arial", 12, "bold"))
-    addGameName_entry.pack(padx=(50, 10), pady=(200, 10), anchor="w")
+    addGameName_entry.pack(padx=(50, 10), pady=(100, 10), anchor="w")
 
     genre_entry = ctk.CTkEntry(app, fg_color="white", width=290, height=37, border_color="black", corner_radius=5, 
                                 placeholder_text="Genre", placeholder_text_color="black", text_color="black",
                                 font=("Arial", 12, "bold"))
     genre_entry.pack(padx=(50, 10), anchor="w")
+
+    description = ctk.CTkTextbox(app, width=300, height=180, fg_color="white", text_color="black", font=("Arial", 14))
+    description.place(x=780, y=180)
 
     # ---------------SELECIONAR IMAGEM JOGO---------------------
     #-----------------------------------------------------------------
@@ -650,19 +653,18 @@ def addGameUI():
     selectImageBtn = ctk.CTkButton(app, text="SELECT IMAGE", fg_color="#FFA500", hover_color="#FF5900",
                                 width=160, height=37, border_color="black", text_color="black",
                                 font=ctk.CTkFont(size=20, weight="bold"), command=lambda:selectImage())
-    selectImageBtn.pack(padx=(50, 10), pady=10, anchor="w")
-
-    addGameBtn = ctk.CTkButton(app, text="ADD GAME", fg_color="#FFA500", hover_color="#FF5900", width=160, height=37,
-                                border_color="black", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: addUserUI())
-    addGameBtn.pack(padx=(50, 10), pady=3, anchor="w")
-
-    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", 
-                              width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                              font=ctk.CTkFont(size=20, weight="bold"), command=lambda:adminPageUI())
-    backBtn.pack(padx=5, pady=20, anchor="center")
+    selectImageBtn.pack(padx=260, pady=140, anchor="center")
 
     img_label = ctk.CTkLabel(app, text="", width=180, height=180, fg_color="white")
-    img_label.place(x=900, y=300)
+    img_label.place(x=900, y=380) 
+
+    addGameBtn = ctk.CTkButton(app, text="ADD GAME", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
+                             border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:"")
+    addGameBtn.pack(side="left", padx=(250,5), pady=(0,0) ,anchor="center")
+
+    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:gamesManagerUI())
+    backBtn.pack(side="left", padx=5, pady=(0,0), anchor="center") 
 
 def addUserUI():
     # ---------------ADICIONAR UTILIZADOR---------------------
@@ -729,8 +731,8 @@ def addUserUI():
 
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", 
                               width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                              font=ctk.CTkFont(size=20, weight="bold"), command=lambda:adminPageUI())
-    backBtn.pack(padx=5, pady=20, anchor="center")
+                              font=ctk.CTkFont(size=20, weight="bold"), command=lambda:usersManagerUI())
+    backBtn.pack(padx=5, pady=0, anchor="center")
 
 def usersManagerUI():
     # ---------------PÁGINA GESTOR UTILIZADORES---------------------
