@@ -1,6 +1,3 @@
-#ficheiro python com as funções relacionadas com os utilizadores
-#estrutura da linha do ficheiro users.txt: username;email;password;nivelPermissao
-
 # ---------------BIBLIOTECAS ---------------------
 # -----------------------------------------------------------------
 
@@ -9,7 +6,7 @@ from tkinter import messagebox
 import os
 import datetime
 import readFiles as rf
-
+import semEncript as se
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
 
@@ -26,7 +23,7 @@ def addUser():
     if username == "" or email == "" or password == "" or nivelPerm == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             camposUser = linha.split(";")
             if camposUser[0] == username:
@@ -60,7 +57,7 @@ def deleteUser():
     if username == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             user = linha.split(";")
             if user[0] == username:
@@ -84,7 +81,7 @@ def editUser():
     if username == "" or email == "" or password == "" or nivelPerm == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
+        listaUsers = rf.lerFicheiroUsers()
         for linha in listaUsers:
             user = linha.split(";")
             if user[0] == username:
@@ -114,43 +111,57 @@ def signinFunction(newUsernameEntry,newEmailEntry,newPasswordEntry):
     if username == "" or email == "" or password == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        listaUsers = lerFicheiroUsers()
-        for linha in listaUsers:
-            camposUser = linha.split(";")
-            if camposUser[0] == username:
-                messagebox.showerror("Error", "Username already exists!")
-                return
-            elif email.count("@") != 1 or email.count(".") == 0:
-                messagebox.showerror("Error", "Invalid email!")
-                return
-            elif camposUser[1] == email:
-                messagebox.showerror("Error", "Email already exists!")
-                return
-            elif len(password) < 8:
-                messagebox.showerror("Error", "Password must be at least 8 characters long!")
-                return
-            else:
-                file = open("users.txt", "a", encoding="utf-8")
-                file.write(f"{username};{email};{password};user\n")
-                file.close()
-                messagebox.showinfo("Success", "User added successfully!")
-                newUsernameEntry.delete(0, "end")
-                newEmailEntry.delete(0, "end")
-                newPasswordEntry.delete(0, "end")
-                return
+        uList = rf.lerFicheiroUsers()
+        if not uList:
+            file = open(".\\files\\users.txt", "a", encoding="utf-8")
+            file.write(f"{username};{email};{password};1\n")
+            file.close()
+            messagebox.showinfo("Success", "User added successfully!")
+            newUsernameEntry.delete(0, "end")
+            newEmailEntry.delete(0, "end")
+            newPasswordEntry.delete(0, "end")
+            return
+        else:
+            for linha in uList:
+                camposUser = linha.split(";")
+                if camposUser[0] == username:
+                    messagebox.showerror("Error", "Username already exists!")
+                    return
+                elif email.count("@") != 1 or email.count(".") == 0:
+                    messagebox.showerror("Error", "Invalid email!")
+                    return
+                elif camposUser[1] == email:
+                    messagebox.showerror("Error", "Email already exists!")
+                    return
+                elif len(password) < 8:
+                    messagebox.showerror("Error", "Password must be at least 8 characters long!")
+                    return
+                else:
+                    file = open("users.txt", "a", encoding="utf-8")
+                    file.write(f"{username};{email};{password};1\n")
+                    file.close()
+                    messagebox.showinfo("Success", "User added successfully!")
+                    newUsernameEntry.delete(0, "end")
+                    newEmailEntry.delete(0, "end")
+                    newPasswordEntry.delete(0, "end")
+                    return
             
-def userLogin(username, password):
+def userLogin(userInput, password):
     """
     Função que faz login do utilizador
     """
     listaUsers = rf.lerFicheiroUsers()
-    for linha in listaUsers:
-        user = linha.split(";")
-        if user[0] == username and user[2] == password:
+    if userInput == "" or password == "":
+        messagebox.showerror("Error", "Please fill in all fields!")
+        return
+    for user in listaUsers:
+        userData = user.split(";")
+        print(userData[0], userInput, userData[2], password)
+        if userData[0] == userInput and userData[2] == password:
             global currentUser
-            currentUser = username
+            currentUser = userInput
             messagebox.showinfo("Success", "Logged in successfully!")
-            return
+            se.welcomeUI()
     messagebox.showerror("Error", "Invalid username or password!")
 
 def userLogout():
@@ -160,7 +171,7 @@ def userLogout():
     caso o utilizador não tenha feito logout adiciona a data de logout quando
     o mesmo fizer logout
     """
-    listaUsers = lerFicheiroUsers()
+    listaUsers = rf.lerFicheiroUsers()
     for linha in listaUsers:
         user = linha.split(";")
         if user[0] == currentUser:

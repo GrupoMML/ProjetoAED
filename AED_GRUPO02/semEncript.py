@@ -15,7 +15,13 @@ import games
 import notifications
 import datetime
 
-# ---------------CRIAÇÃO DA PASTA USERS E CODIFICAÇÃO DA INFORMAÇÃO ---------------------
+
+#Retorna o caminho absoluto do ficheiro Python atualmente em execução.
+root_dir = os.path.dirname(os.path.abspath(__file__))
+#Altera o diretório atual para o diretório do ficheiro python
+os.chdir(root_dir)
+
+# ---------------CRIAÇÃO DA PASTA FILES  ---------------------
 #-----------------------------------------------------------------
 if not os.path.exists("files"):
     os.makedirs("files")
@@ -84,7 +90,7 @@ def loginUI():
     button_frame.pack(pady=(20, 20), anchor="center")
 
     loginBtn = ctk.CTkButton(button_frame, text="LOGIN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:users.loginFunction(username_entry, password_entry))
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:users.userLogin(username_entry.get(), password_entry.get()))
     loginBtn.pack(side="left", padx=5, anchor="center")
 
     signinBtn = ctk.CTkButton(button_frame, text="SIGN IN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 

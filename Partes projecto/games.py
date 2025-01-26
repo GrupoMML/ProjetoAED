@@ -151,7 +151,6 @@ def searchBar(gameSearch):
     if gameSearch == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        
         gamesList = users.lerFicheiroJogos()
         for line in gamesList:
             game = line.split(";")

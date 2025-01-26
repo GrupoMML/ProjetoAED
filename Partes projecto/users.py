@@ -1,5 +1,3 @@
-#ficheiro python com as funções relacionadas com os utilizadores
-#estrutura da linha do ficheiro users.txt: username;email;password;nivelPermissao
 
 # ---------------BIBLIOTECAS ---------------------
 # -----------------------------------------------------------------
@@ -11,6 +9,11 @@ import datetime
 import readFiles as rf
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
+
+#Retorna o caminho absoluto do ficheiro Python atualmente em execução.
+root_dir = os.path.dirname(os.path.abspath(__file__))
+#Altera o diretório atual para o diretório do ficheiro python
+os.chdir(root_dir)
 
 # ADMINISTRADOR:
 
