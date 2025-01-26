@@ -7,9 +7,13 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 import base64
-
+""" import users as us
+import notifications as ntf
+import games as gm 
+import readFiles as rf
+import datetime """
 
 # ---------------CRIAÇÃO DA PASTA USERS E CODIFICAÇÃO DA INFORMAÇÃO ---------------------
 #-----------------------------------------------------------------
@@ -25,6 +29,7 @@ def decodeBinary(data):
 # ---------------VARIAVEIS GLOBAIS---------------------
 #-----------------------------------------------------------------
 currentUser = ""
+profile_circle = None
 
 # ---------------INICIO DA INTERFACE GRAFICA  ---------------------
 #-----------------------------------------------------------------
@@ -55,6 +60,23 @@ def showFrame(frame):
     for widget in app.winfo_children():
         widget.destroy()
     frame.pack(fill="both", expand=True)
+
+# ---------------SELECIONAR IMAGEM ---------------------
+#-----------------------------------------------------------------
+def selectProfileImage():
+    file_path = filedialog.askopenfilename(initialdir="./Images", title="Select Image",
+                                           filetypes=(("PNG Images", "*.png"), ("JPG Images", "*.jpg")))
+    if file_path:
+        img = Image.open(file_path).resize((100, 100), Image.Resampling.LANCZOS)
+        mask = Image.new("L", (100, 100), 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, 100, 100), fill=255)
+        img.putalpha(mask)
+        profile_img = ctk.CTkImage(img, size=(100, 100))
+        
+        # Atualizar a imagem no botão globalmente
+        profile_circle.configure(image=profile_img, fg_color="transparent")
+        profile_circle.image = profile_img
 
 # ---------------PARTES LOGIN---------------------
 #-----------------------------------------------------------------
@@ -238,6 +260,8 @@ def qrcodeFunction():
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:loginUI())
     backBtn.pack(side="left", padx=5, anchor="center")
 
+    app.after(5000, welcomeUI)
+
 # ---------------PARTES BEM VINDO---------------------
 #-----------------------------------------------------------------
 def draw_loading_circle(canvas, angle):
@@ -314,6 +338,8 @@ def storePageUI():
                                 width=247, height=44)
         button.pack(pady=5, padx=42)
 
+    global profile_circle
+
     profile_button_frame = ctk.CTkFrame(sidebar)
     profile_button_frame.pack(side=ctk.BOTTOM, pady=15)  
 
@@ -334,26 +360,29 @@ def storePageUI():
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    categories = ["ACTION", "ADVENTURE", "RPG"]
-    for idx, category in enumerate(categories):
-        category_label = ctk.CTkLabel(app, text=category, font=("Arial", 14, "bold"), text_color="white")
-        category_label.pack(anchor="w", padx=20)
-    
-        games_frame = ctk.CTkFrame(app, fg_color="#101010")
-        games_frame.pack(fill="x", padx=20, pady=10)
+    game_frame = ctk.CTkFrame(app, fg_color="#101010", width=800, height=400)
+    game_frame.pack(pady=100)
 
-        for i in range(3):
-            game_card = ctk.CTkFrame(games_frame, fg_color="#D9D9D9", width=250, height=295, corner_radius=10)
-            game_card.pack(side=ctk.LEFT, padx=30)
+    game1_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game1_button = ctk.CTkButton(game_frame, image=game1_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game1_button.place(x=30, y=26)
+    game1Txt = ctk.CTkLabel(game_frame, text="GAME 1", text_color="white", font=("Arial", 18))
+    game1Txt.place(x=100, y=340)
 
-            game_label = ctk.CTkLabel(game_card, text=f"GAME {i + 1}", font=("Arial", 12, "bold"), text_color="black")
-            game_label.place(relx=0.5, rely=0.4, anchor="center")
+    game2_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game2_button = ctk.CTkButton(game_frame, image=game2_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game2_button.place(x=310, y=26)
+    game2Txt = ctk.CTkLabel(game_frame, text="GAME 2", text_color="white", font=("Arial", 18))
+    game2Txt.place(x=380, y=340)
 
-            price_label = ctk.CTkLabel(game_card, text="Name game\nPrice", font=("Arial", 10), text_color="black")
-            price_label.place(relx=0.5, rely=0.7, anchor="center")
-
-            heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
-            heart_icon.place(relx=0.9, rely=0.9, anchor="center")
+    game3_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game3_button = ctk.CTkButton(game_frame, image=game3_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game3_button.place(x=580, y=26)
+    game3Txt = ctk.CTkLabel(game_frame, text="GAME 3", text_color="white", font=("Arial", 18))
+    game3Txt.place(x=650, y=340)
 
 def libraryPageUI():
     # --------------DESIGN PÁGINA BIBLIOTECA ---------------------
@@ -407,30 +436,33 @@ def libraryPageUI():
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    categories = ["ACTION", "ADVENTURE", "RPG"]
-    for idx, category in enumerate(categories):
-        category_label = ctk.CTkLabel(app, text=category, font=("Arial", 14, "bold"), text_color="white")
-        category_label.pack(anchor="w", padx=20, pady=10)
-    
-        games_frame = ctk.CTkFrame(app, fg_color="#101010")
-        games_frame.pack(fill="x", padx=20, pady=10)
+    game_frame = ctk.CTkFrame(app, fg_color="#101010", width=800, height=400)
+    game_frame.pack(pady=100)
 
-        for i in range(3):
-            game_card = ctk.CTkFrame(games_frame, fg_color="#D9D9D9", width=250, height=295, corner_radius=10)
-            game_card.pack(side=ctk.LEFT, padx=30)
+    game1_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game1_button = ctk.CTkButton(game_frame, image=game1_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game1_button.place(x=30, y=26)
+    game1Txt = ctk.CTkLabel(game_frame, text="GAME 1", text_color="white", font=("Arial", 18))
+    game1Txt.place(x=100, y=340)
 
-            game_label = ctk.CTkLabel(game_card, text=f"GAME {i + 1}", font=("Arial", 12, "bold"), text_color="black")
-            game_label.place(relx=0.5, rely=0.4, anchor="center")
+    game2_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game2_button = ctk.CTkButton(game_frame, image=game2_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game2_button.place(x=310, y=26)
+    game2Txt = ctk.CTkLabel(game_frame, text="GAME 2", text_color="white", font=("Arial", 18))
+    game2Txt.place(x=380, y=340)
 
-            price_label = ctk.CTkLabel(game_card, text="Name game\nPrice", font=("Arial", 10), text_color="black")
-            price_label.place(relx=0.5, rely=0.7, anchor="center")
+    game3_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    game3_button = ctk.CTkButton(game_frame, image=game3_image, text="", fg_color="#101010", width=200, height=300,
+                                 command=lambda: gameAspect())
+    game3_button.place(x=580, y=26)
+    game3Txt = ctk.CTkLabel(game_frame, text="GAME 3", text_color="white", font=("Arial", 18))
+    game3Txt.place(x=650, y=340)
 
-            heart_icon = ctk.CTkLabel(game_card, text="\u2764", font=("Arial", 14), text_color="#FF5900")
-            heart_icon.place(relx=0.9, rely=0.9, anchor="center")
-
-# ---------------PÁGINA ADMIN---------------------
-#-----------------------------------------------------------------
 def adminPageUI():
+    # ---------------PÁGINA ADMIN---------------------
+    #-----------------------------------------------------------------
     for widget in app.winfo_children():
         widget.destroy()
         
@@ -516,6 +548,171 @@ def adminPageUI():
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:graphFunc())
     draw_button.pack()
 
+def gameAspect():
+    # ---------------ASPECTO JOGOS---------------------
+    #-----------------------------------------------------------------
+    for widget in app.winfo_children():
+        widget.destroy()
+
+    sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
+    imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
+    imgIcon_label.place(x=61, y=26)
+
+    button_frame = ctk.CTkFrame(sidebar)
+    button_frame.pack(expand=True)
+
+    buttons = ["STORE", "LIBRARY", "ADMIN"]
+    for btn in buttons:
+        if btn == "STORE":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:storePageUI(),
+                                width=247, height=44)
+        elif btn == "LIBRARY":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:libraryPageUI(),
+                                width=247, height=44)
+        else:  
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:adminPageUI(),
+                                width=247, height=44)
+        button.pack(pady=5, padx=42)
+
+    profile_button_frame = ctk.CTkFrame(sidebar)
+    profile_button_frame.pack(side=ctk.BOTTOM, pady=15)  
+
+    profile_settingsBtn = ctk.CTkButton(profile_button_frame, text="PROFILE SETTINGS", text_color="white", fg_color="#FF5900",
+                                        font=("Arial", 12), hover_color="#FF4500", command=lambda:settingsPageUI(), width=247, height=44)
+    profile_settingsBtn.pack(pady=5, padx=42)  
+
+    topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
+    topbar.pack(side=ctk.TOP, fill=ctk.X)
+    
+    game_label = ctk.CTkLabel(topbar, text="GAME NAME", text_color="white", font=("Arial", 18))
+    game_label.pack(side=ctk.LEFT, padx=35)
+
+    profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
+                                   text="", hover_color="#FF5900", command=lambda:settingsPageUI())
+    profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
+
+    search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+
+    imgGame = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    imgGame_label = ctk.CTkLabel(app, image=imgGame, text="", fg_color="#2E2B2B")
+    imgGame_label.place(x=350, y=200)
+
+    nameGame_label = ctk.CTkLabel(app, text="GAME NAME", text_color="white", font=("Arial", 18))
+    nameGame_label.place(x=580, y=220)
+
+    gameDescription=ctk.CTkTextbox(app, width=480, height=180, fg_color="white", font=("Arial", 12), text_color="black")
+    gameDescription.place(x=350, y=520)
+
+    saveBtn = ctk.CTkButton(app, text="SAVE", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37,
+                            border_color="black", text_color="black",font=ctk.CTkFont(size=20, weight="bold"), command="")
+    saveBtn.place(x=580, y=260) 
+
+    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900",
+                            width=292, height=37, border_color="#2E2B2B", text_color="black", 
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:storePageUI())
+    backBtn.place(x=350, y=150)
+
+    comment_frame=ctk.CTkFrame(app, fg_color="#101010", width=300, height=520, corner_radius=10)
+    comment_frame.place(x=860, y=150)
+
+    commentZone=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
+    commentZone.place(x=10, y=20)
+
+    commentZone2=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
+    commentZone2.place(x=10, y=150)
+
+    commentZone3=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
+    commentZone3.place(x=10, y=280)
+
+    commentZone3=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
+    commentZone3.place(x=10, y=410)
+
+    createCommentBtn = ctk.CTkButton(app, text="CRATE A COMMENT", fg_color="#FFA500", hover_color="#FF5900",
+                            width=300, height=37, border_color="#2E2B2B", text_color="black", 
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:commentsPage())
+    createCommentBtn.place(x=860, y=680)
+
+def commentsPage():
+    # ---------------PÁGINA COMENTÁRIOS---------------------
+    #-----------------------------------------------------------------
+    for widget in app.winfo_children():
+        widget.destroy()
+
+    sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
+    imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
+    imgIcon_label.place(x=61, y=26)
+
+    button_frame = ctk.CTkFrame(sidebar)
+    button_frame.pack(expand=True)
+
+    buttons = ["STORE", "LIBRARY", "ADMIN"]
+    for btn in buttons:
+        if btn == "STORE":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:storePageUI(),
+                                width=247, height=44)
+        elif btn == "LIBRARY":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:libraryPageUI(),
+                                width=247, height=44)
+        else:  
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:adminPageUI(),
+                                width=247, height=44)
+        button.pack(pady=5, padx=42)
+
+    profile_button_frame = ctk.CTkFrame(sidebar)
+    profile_button_frame.pack(side=ctk.BOTTOM, pady=15)  
+
+    profile_settingsBtn = ctk.CTkButton(profile_button_frame, text="PROFILE SETTINGS", text_color="white", fg_color="#FF5900",
+                                        font=("Arial", 12), hover_color="#FF4500", command=lambda:settingsPageUI(), width=247, height=44)
+    profile_settingsBtn.pack(pady=5, padx=42)  
+
+    topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
+    topbar.pack(side=ctk.TOP, fill=ctk.X)
+    
+    commentsZone_label = ctk.CTkLabel(topbar, text="COMMENTS ZONE", text_color="white", font=("Arial", 18))
+    commentsZone_label.pack(side=ctk.LEFT, padx=35)
+
+    profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
+                                   text="", hover_color="#FF5900", command=lambda:settingsPageUI())
+    profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
+
+    search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+
+    ratingList = ["Select..." ,"1", "2", "3", "4", "5"]
+
+    rating_label= ctk.CTkLabel(app, text="Rating", text_color="white", font=("Arial", 18))
+    rating_label.place(x=540, y=200)
+
+    rating=ctk.CTkComboBox(app, width=300, height=37, fg_color="white", values= ratingList, font=("Arial", 12), text_color="black", state="readonly")
+    rating.place(x=640, y=200)
+    rating.set("Select...")
+
+    commentTxt=ctk.CTkTextbox(app, width=500, height=300, fg_color="white", font=("Arial", 12), text_color="black")
+    commentTxt.place(x=480, y=260)
+
+    commentBtn = ctk.CTkButton(app, text="COMMENT HERE", fg_color="#FFA500", hover_color="#FF5900",
+                            width=292, height=37, border_color="#2E2B2B", text_color="black", 
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:"")
+    commentBtn.place(x=580, y=600)
+
+    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900",
+                            width=292, height=37, border_color="#2E2B2B", text_color="black", 
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:gameAspect())
+    backBtn.place(x=580, y=650)
+
 def settingsPageUI():
     # --------------DESIGN PÁGINA SETTINGS ---------------------
     #-----------------------------------------------------------------
@@ -557,7 +754,8 @@ def settingsPageUI():
     user_info_frame = ctk.CTkFrame(app, width=875, height=450, fg_color="black")
     user_info_frame.place(x=370, y=160) 
 
-    profile_circle = ctk.CTkButton(user_info_frame, width=100, height=100, corner_radius=77, fg_color="#FFA500", text="", hover_color="#FF5900")
+    global profile_circle
+    profile_circle = ctk.CTkButton(user_info_frame, width=100, height=100, corner_radius=77, fg_color="#FFA500", text="", hover_color="#FF5900", command=lambda:selectProfileImage())
     profile_circle.place(x=5, y=5)
 
     username_label = ctk.CTkLabel(user_info_frame, text="USERNAME", text_color="white", font=("Arial", 40, "bold"))
@@ -566,7 +764,7 @@ def settingsPageUI():
     personal_info = ctk.CTkLabel(user_info_frame, text="EMAIL:", text_color="white", font=("Arial", 22), justify="left")
     personal_info.place(x=120, y=65)
 
-    change_password_button = ctk.CTkButton(user_info_frame, text="CHANGE PASSWORD", text_color="white", fg_color="#383838", font=("Arial", 22), hover_color="#5A5A5A", width=140, height=33)
+    change_password_button = ctk.CTkButton(user_info_frame, text="CHANGE PASSWORD", text_color="white", fg_color="#383838", font=("Arial", 22), hover_color="#5A5A5A", width=140, height=33, command=" ")
     change_password_button.place(x=550, y=65)
 
     notifications_frame= ctk.CTkFrame (app, width=800, height=51, corner_radius=10, fg_color="#FFA500")
@@ -584,7 +782,7 @@ def settingsPageUI():
     msgSettings_label = ctk.CTkLabel(msgSettings_frame, text="YOU'RE A PRO PLAYER, DON'T GIVE UP", text_color="black", font=("Arial", 22, "bold"))
     msgSettings_label.place(relx=0.5, rely=0.5, anchor="center")
 
-    logoutBtn = ctk.CTkButton(app, text="LOGOUT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=191, height=52)
+    logoutBtn = ctk.CTkButton(app, text="LOGOUT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=191, height=52, command=lambda:loginUI())
     logoutBtn.place(x=980, y=580)
 
     deleteAccountBtn= ctk.CTkButton(app, text="DELETE ACCOUNT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=800, height=55, command=lambda:deletePageUI())
