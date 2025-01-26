@@ -1,0 +1,2 @@
+GameTeste;RPG;12345
+;Images/games/GameTeste.png
