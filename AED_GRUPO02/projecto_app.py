@@ -42,7 +42,6 @@ def renderWindow(appWidth, appHeight, appTitle):
 app = ctk.CTk()
 app.configure(fg_color="black")  
 app.iconbitmap("Images/1-f8c98aa8.ico")
-
 renderWindow(1180, 732, "GameON!")
 
 # ---------------FUNCOES ---------------------
@@ -183,30 +182,30 @@ def addNotification(nomeJogo, genero):
 
 def verificarGeneroJogosFavoritos(genero):
     """
-    Função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
+    Função que verifica se o jogo adicionado à lista de jogos é do mesmo gênero que um dos jogos favoritos do utilizador.
     """
     listaJogosFavoritos = readFiles.lerFicheiroJogosFavoritos()
     for linha in listaJogosFavoritos:
-        jogo = linha.split(";")
-        if jogo[0] == currentUser and jogo[2] == genero:
+        jogo = linha.strip().split(";")
+        if len(jogo) >= 3 and jogo[0] == currentUser and jogo[2] == genero:
             return True
     return False
 
 def verificarDataUltimoLogout(dataCriacao):
     """
-    Função que verifica se a data do último logout é inferior à data de criação da notificação
+    Função que verifica se a data do último logout é inferior à data de criação da notificação.
     """
-    
     listaUsers = readFiles.lerFicheiroUsers()
     for linha in listaUsers:
-        user = linha.split(";")
-        if user[0] == currentUser:
-            dataUltimoLogout = user[4]
+        user = linha.strip().split(";")
+        if len(user) >= 4 and user[0] == currentUser:
+            dataUltimoLogout = user[3]
             try:
                 dataUltimoLogout = datetime.datetime.strptime(dataUltimoLogout, "%Y-%m-%d %H:%M:%S")
                 dataCriacao = datetime.datetime.strptime(dataCriacao, "%Y-%m-%d %H:%M:%S")
                 return dataUltimoLogout < dataCriacao
             except ValueError:
+                print(f"Erro ao converter datas: {dataUltimoLogout} ou {dataCriacao}")
                 return False
     return False
 
@@ -222,12 +221,6 @@ def deleteNotification(nomeJogo):
     file = open("files/notificacoes.txt", "w", encoding="utf-8")
     file.writelines(listaNotificacoes)
     file.close()
-
-def clearNotifications():
-    """
-    Função que limpa as notificações da scrollbox
-    """
-    scrollNotificacoes.delete(1.0, "end")
 
 def addComment(game,comment,user,rating):
     """
@@ -511,7 +504,8 @@ def userLogout():
     for index, linha in enumerate(listaUsers):
         user = linha.split(";")
         if user[0] == currentUser:
-            user[3] = str(datetime.datetime.now())
+            user[3] = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            
 
             listaUsers[index] = ";".join(user) + "\n" 
 
@@ -596,14 +590,6 @@ def loginUI():
     signinBtn = ctk.CTkButton(login_button_frame, text="SIGN IN", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: signinUI())
     signinBtn.pack(side="left", padx=5, anchor="center")
-
-    qrcode_frame = ctk.CTkFrame(input_frame, fg_color="#2E2B2B")
-    qrcode_frame.pack(pady=(5, 20), anchor="center")
-
-    qrcodeBtn = ctk.CTkButton(qrcode_frame, text="QR CODE", fg_color="#FFA500", hover_color="#FF5900", 
-                                width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                                font=ctk.CTkFont(size=20, weight="bold"), command=lambda: qrcodeFunction())
-    qrcodeBtn.pack(padx=5, anchor="center")
     
 def signinUI():
     # --------------DESIGN SIGN IN ---------------------
@@ -639,36 +625,6 @@ def signinUI():
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:loginUI())
     backBtn.pack(side="left", padx=5, anchor="center")
 
-"""
-def qrcodeFunction():
-    # --------------FUNCIONALIDADES E DESIGN QR CODE ---------------------
-    #-----------------------------------------------------------------
-    qrcode_frame = ctk.CTkFrame(app, width=800, height=500, fg_color="#2E2B2B", corner_radius=15)
-    qrcode_frame.place(relx=0.5, rely=0.5, anchor="center")
-
-    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(290, 100))
-    imgIcon_label = ctk.CTkLabel(qrcode_frame, image=imgIcon, text="", fg_color="#2E2B2B")
-    imgIcon_label.place(relx=0.5, rely=0.2, anchor="center")
-
-    input_frame = ctk.CTkFrame(qrcode_frame, width=550, height=350, fg_color="#2E2B2B")
-    input_frame.place(relx=0.5, rely=0.9, anchor="center")  
-
-    msg_qrcode_label = ctk.CTkLabel(qrcode_frame, text="SCAN & GO!", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
-    msg_qrcode_label.place(relx=0.5, rely=0.3, anchor="center")
-
-    imgQR = ctk.CTkImage(Image.open("Images/frame.png"), size=(239, 239))
-    imgQR_label = ctk.CTkLabel(qrcode_frame, image=imgQR, text="", fg_color="#2E2B2B")
-    imgQR_label.place(relx=0.5, rely=0.6, anchor="center") 
-
-    button_frame = ctk.CTkFrame(input_frame, fg_color="#2E2B2B")
-    button_frame.pack(pady=(20, 20), anchor="center")
-
-    backBtn = ctk.CTkButton(button_frame, text="BACK", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:loginUI())
-    backBtn.pack(side="left", padx=5, anchor="center")
-
-    app.after(5000, welcomeUI)
-"""
 def draw_loading_circle(canvas, angle):
     # ---------------CANVAS PARA O LOADING ---------------------
     #-----------------------------------------------------------------
@@ -1041,7 +997,7 @@ def adminPageUI():
     canvas.pack(pady=20)
 
     draw_button = ctk.CTkButton(app, text="DRAW GRAPH", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=graphFunc)
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:graphFunc())
     draw_button.pack()
 
 def gameAspect(gameName, gameGenre, gameDescription, gameImage):
@@ -1147,7 +1103,7 @@ def gameAspect(gameName, gameGenre, gameDescription, gameImage):
             if len(comentario) >= 4 and comentario[0] == gameName:  # Verifica se há campos suficientes e se o jogo corresponde
                 comment_label = ctk.CTkLabel(
                     comment_frame, 
-                    text=f"User: {comentario[1]}\nRating: {comentario[2]}/5\nComment: {comentario[3]}", 
+                    text=f"User: {comentario[1]}\t\tRating: {comentario[2]}/5\nComment: {comentario[3]}", 
                     text_color="white", 
                     font=("Arial", 12),
                     wraplength=280  # Limita o comprimento do texto
@@ -1157,7 +1113,7 @@ def gameAspect(gameName, gameGenre, gameDescription, gameImage):
         # Mensagem padrão se não houver comentários
         empty_label = ctk.CTkLabel(
             comment_frame, 
-            text="Nenhum comentário disponível para este jogo.", 
+            text="No comments available.", 
             text_color="white", 
             font=("Arial", 12)
         )
@@ -1311,17 +1267,26 @@ def settingsPageUI():
 
     listaNotificacoes = readFiles.lerFicheiroNotificacoes()
     for linha in listaNotificacoes:
-        notificacao = linha.split(";")
-        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
-            notification_text = f"Game: {notificacao[0]}\nGenre: {notificacao[1]}"
-            notifications_label = ctk.CTkLabel(notification_frame,
-                                            text=notification_text,
-                                            text_color="white",
-                                            font=("Arial", 14),
-                                            fg_color="#101010",
-                                            width=300, height=100,
-                                            anchor="w")
-            notifications_label.pack(pady=10, padx=20)
+        notificacao = linha.strip().split(";")
+        if len(notificacao) >= 3:  # Verifica se há pelo menos 3 campos
+            nome_jogo, genero, data_criacao = notificacao[0], notificacao[1], notificacao[2]
+            print(verificarDataUltimoLogout(data_criacao))
+            print(verificarGeneroJogosFavoritos(genero))
+            if verificarGeneroJogosFavoritos(genero) and verificarDataUltimoLogout(data_criacao):
+                notification_text = f"Game: {nome_jogo}\nGenre: {genero}"
+                notifications_label = ctk.CTkLabel(
+                    notification_frame,
+                    text=notification_text,
+                    text_color="black",
+                    font=("Arial", 14),
+                    fg_color="#101010",
+                    width=300,
+                    height=100,
+                    anchor="w"
+                )
+                notifications_label.pack(pady=10, padx=20)
+        else:
+            print(f"Linha inválida ignorada: {linha}")
 
     msgSettings_frame= ctk.CTkFrame (app, width=600, height=52, corner_radius=10, fg_color="#FFA500")
     msgSettings_frame.place(x=370, y=580)
@@ -1331,9 +1296,6 @@ def settingsPageUI():
 
     logoutBtn = ctk.CTkButton(app, text="LOGOUT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=191, height=52, command=lambda:userLogout())
     logoutBtn.place(x=980, y=580)
-
-    deleteAccountBtn= ctk.CTkButton(app, text="DELETE ACCOUNT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=800, height=55, command=lambda:deletePageUI())
-    deleteAccountBtn.place(x=370, y=650)
 
 def addGameUI():
     # Variável para armazenar o caminho da imagem selecionada
@@ -1549,11 +1511,12 @@ def usersManagerUI():
 
     lUsers = readFiles.lerFicheiroUsers()
     for line in lUsers:
-        user = line.split(";")
-        if user[2] != "2":
-            tree.insert('', 'end', values=(user[0].strip(), "User"))
+        user = line.strip().split(";")
+        if len(user) >= 4:
+            if user[2] != "2":
+                tree.insert('', 'end', values=(user[0].strip(), "User"))
         else:
-            continue
+            print(f"Linha inválida encontrada e ignorada: {line}")
 
     button_frame = ctk.CTkFrame(app, fg_color="black")
     button_frame.pack(pady=(20, 0), anchor="center")
@@ -1645,63 +1608,6 @@ def gamesManagerUI():
                               width=292, height=37, border_color="#2E2B2B", text_color="black", 
                               font=ctk.CTkFont(size=20, weight="bold"), command=lambda:adminPageUI())
     backBtn.pack(padx=5, pady=20, anchor="center")
-
-def deletePageUI():
-    # --------------DESIGN PÁGINA DELETE ---------------------
-    #-----------------------------------------------------------------
-    for widget in app.winfo_children():
-        widget.destroy()
-
-    main_frame = ctk.CTkFrame(app, width=1180, height=732, fg_color="#2E2B2B", corner_radius=0)
-    main_frame.pack(fill="both", expand=True)
-
-    dlt_msg_label1 = ctk.CTkLabel(main_frame, text="THIS ACTION WILL DELETE YOUR ACCOUNT", 
-                              font=ctk.CTkFont(size=45, weight="bold"), text_color="#FFA500")
-    dlt_msg_label1.place(relx=0.5, rely=0.3, anchor="center")
-
-    dlt_msg_label2 = ctk.CTkLabel(main_frame, text="PERMANENTLY!", 
-                                font=ctk.CTkFont(size=50, weight="bold"), text_color="#FF4500")
-    dlt_msg_label2.place(relx=0.5, rely=0.4, anchor="center")
-
-    dlt_msg_label3 = ctk.CTkLabel(main_frame, text="ARE YOU SURE?", 
-                                font=ctk.CTkFont(size=70, weight="bold"), text_color="#FFA500")
-    dlt_msg_label3.place(relx=0.5, rely=0.55, anchor="center")
-
-    button_frame = ctk.CTkFrame(main_frame, fg_color="#2E2B2B")
-    button_frame.place(relx=0.5, rely=0.75, anchor="center")
-
-    noBtn = ctk.CTkButton(button_frame, text="NO, I STILL WANNA PLAY!", fg_color="#D9D9D9", hover_color="#5A5A5A", width=300, height=60, border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=35, weight="bold"), command=lambda: settingsPageUI())
-    noBtn.pack(side="left", padx=10)
-
-    yesBtn = ctk.CTkButton(button_frame, text="YES, UNFORTUNATELY!", fg_color="#D9D9D9", hover_color="#5A5A5A", width=300, height=60, border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=35, weight="bold"), command=lambda: goodbyeUI() )
-    yesBtn.pack(side="left", padx=10)
-    
-"""def goodbyeUI():
-    # --------------DESIGN GOODBYE ---------------------
-    #-----------------------------------------------------------------
-    
-    for widget in app.winfo_children():
-        widget.destroy()
-
-    goodbye_frame = ctk.CTkFrame(app, width=1180, height=732, fg_color="black")
-    goodbye_frame.place(relx=0.5, rely=0.5, anchor="center")
-
-    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(450, 150))
-    imgIcon_label = ctk.CTkLabel(app, image=imgIcon, text="")
-    imgIcon_label.place(relx=0.5, rely=0.35, anchor="center")
-
-    msg_welcome_label = ctk.CTkLabel(app, text="SEE YOU LATER!", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
-    msg_welcome_label.place(relx=0.5, rely=0.50, anchor="center")
-
-    loading_canvas = tk.Canvas(app, width=120, height=120, bg="black", bd=0, highlightthickness=0)
-    loading_canvas.place(relx=0.5, rely=0.65, anchor="center")
-
-    update_loading_circle(loading_canvas, 0)
-
-    msg_loading_label = ctk.CTkLabel(app, text="LOADING...", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
-    msg_loading_label.place(relx=0.5, rely=0.80, anchor="center")
-
-    app.after(5000, app.destroy())"""
 
 # --------------ECRÃ INICIAL ---------------------
 #-----------------------------------------------------------------

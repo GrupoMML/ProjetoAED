@@ -1,5 +1,3 @@
 admin;Rocket League;RACES
 admin;League of Legends;MOBA
-teste;Valorant;FPS
-teste;Minecraft;Sandbox
-teste;Rocket League;RACES
+manuel;League of Legends;MOBA
