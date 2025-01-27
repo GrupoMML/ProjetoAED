@@ -59,6 +59,6 @@ As funcionalidades criadas incluem:
 ---
 
 ### 👨‍💻 Criadores
-- Nome Miguel Machado https://github.com/Miguyy
-- Nome Manuel Teixeira https://github.com/Manutex78
-- Nome Linda Glahy https://github.com/LindaGlahy
+- Miguel Machado https://github.com/Miguyy
+- Manuel Teixeira https://github.com/Manutex78
+- Linda Glahy https://github.com/LindaGlahy
