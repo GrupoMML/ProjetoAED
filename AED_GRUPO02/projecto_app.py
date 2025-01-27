@@ -7,7 +7,7 @@ import os
 import datetime
 from PIL import Image, ImageDraw
 import readFiles 
-import shutil
+import re
 
 #Retorna o caminho absoluto do ficheiro Python atualmente em execução.
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -37,16 +37,141 @@ def renderWindow(appWidth, appHeight, appTitle):
     x = (screenWidth / 2) - (appWidth / 2)
     y = (screenHeight / 2) - (appHeight / 2)
     app.geometry(f'{appWidth}x{appHeight}+{int(x)}+{int(y)}')
-    app.resizable(True, True)
+    app.resizable(False, False)
 
 app = ctk.CTk()
 app.configure(fg_color="black")  
 app.iconbitmap("Images/1-f8c98aa8.ico")
+
 renderWindow(1180, 732, "GameON!")
+
 # ---------------FUNCOES ---------------------
 # -----------------------------------------------------------------
 
-#função que adiciona uma notificação ao ficheiro notificacoes.txt
+def filterGames(search_text):
+    """
+    Função que filtra os jogos com base no texto de pesquisa.
+    """
+    # Limpa todos os widgets antes de adicionar os resultados
+    for widget in app.winfo_children():
+        widget.destroy()
+
+    sidebar = ctk.CTkFrame(app, width=330, height=830, corner_radius=0, bg_color="#101010")
+    sidebar.pack(side=ctk.LEFT, fill=ctk.Y)
+
+    imgIcon = ctk.CTkImage(Image.open("Images/Logo.png"), size=(200, 75))
+    imgIcon_label = ctk.CTkLabel(sidebar, image=imgIcon, text="", fg_color="#2E2B2B")
+    imgIcon_label.place(x=61, y=26)
+
+    button_frame = ctk.CTkFrame(sidebar)
+    button_frame.pack(expand=True)
+
+    buttons = ["STORE", "LIBRARY", "ADMIN"]
+    for btn in buttons:
+        if btn == "STORE":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:storePageUI(),
+                                width=247, height=44)
+        elif btn == "LIBRARY":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:libraryPageUI(),
+                                width=247, height=44)
+        elif btn == "ADMIN" and checkPermLevel(currentUser) == "2":
+            button = ctk.CTkButton(button_frame, text=btn, text_color="white", fg_color="#383838",
+                                font=("Arial", 12), hover_color="#5A5A5A", command=lambda:adminPageUI(),
+                                width=247, height=44)
+        button.pack(pady=5, padx=42)
+
+    global profile_circle
+
+    profile_button_frame = ctk.CTkFrame(sidebar)
+    profile_button_frame.pack(side=ctk.BOTTOM, pady=15)  
+
+    profile_settingsBtn = ctk.CTkButton(profile_button_frame, text="PROFILE SETTINGS", text_color="white", fg_color="#FF5900",
+                                        font=("Arial", 12), hover_color="#FF4500", command=lambda:settingsPageUI(), width=247, height=44)
+    profile_settingsBtn.pack(pady=5, padx=42)  
+
+    topbar = ctk.CTkFrame(app, width=948, height=128, corner_radius=0, bg_color="#101010")
+    topbar.pack(side=ctk.TOP, fill=ctk.X)
+    
+    store_label = ctk.CTkLabel(topbar, text="SEARCH", text_color="white", font=("Arial", 18))
+    store_label.pack(side=ctk.LEFT, padx=35)
+
+    profile_circle = ctk.CTkButton(topbar, width=50, height=50, corner_radius=25,  fg_color="#FFA500",
+                                   text="", hover_color="#FF5900", command=lambda:settingsPageUI())
+    profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
+
+    search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command=lambda: filterGames(search_entry.get()))
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+
+    game_frame = ctk.CTkScrollableFrame(app, fg_color="#101010")
+    game_frame.pack(fill="both", expand=True, pady=100)
+
+    # Cria a expressão regular para pesquisa
+    search_pattern = re.compile(search_text, re.IGNORECASE)  # Ignora maiúsculas/minúsculas
+
+    # Recarrega a lista de jogos
+    gamesList = readFiles.lerFicheiroJogos()
+
+    max_games_per_row = 3 
+    current_row = 0
+    current_column = 0
+    row_frame = None
+
+    for i, line in enumerate(gamesList):
+        game = line.split(";")
+        
+        # Verifica se o nome ou o gênero do jogo corresponde ao texto de pesquisa
+        if search_pattern.search(game[0]) or search_pattern.search(game[1]):
+            game_image = ctk.CTkImage(Image.open(game[3].strip()), size=(200, 300))
+
+            if current_column == 0:
+                row_frame = ctk.CTkFrame(game_frame, fg_color="#101010")
+                row_frame.pack(side="top", fill="x", padx=10, pady=10)
+
+            game_item_frame = ctk.CTkFrame(row_frame, fg_color="#101010", width=200, height=340)
+            game_item_frame.pack(side="left", padx=10, pady=20)
+
+            game_button = ctk.CTkButton(
+                game_item_frame,
+                image=game_image,
+                text="",
+                fg_color="#101010",
+                width=200,
+                height=300,
+                command=lambda g=game: gameAspect(g[0], g[1], g[2], g[3].strip())
+            )
+            game_button.pack()
+
+            gameTxt = ctk.CTkLabel(
+                game_item_frame,
+                text=game[0],
+                text_color="white",
+                font=("Arial", 18)
+            )
+            gameTxt.pack(pady=5)
+
+            current_column += 1
+            if current_column >= max_games_per_row:
+                current_column = 0
+
+def refreshTreeviewGame(treeview):
+    """
+    Função que atualiza a Treeview com os jogos restantes após a exclusão
+    """
+    # Limpa todos os itens da Treeview
+    for item in treeview.get_children():
+        treeview.delete(item)
+    
+    # Recarrega os jogos restantes
+    listaJogos = readFiles.lerFicheiroJogos()  # Função para ler o arquivo de jogos
+    for linha in listaJogos:
+        jogo = linha.split(";")
+        treeview.insert("", "end", values=(jogo[0], jogo[1], jogo[2]))  # Adiciona novamente os jogos na Treeview
+
 def addNotification(nomeJogo, genero):
     """
     Função que adiciona uma notificação ao ficheiro notificacoes.txt
@@ -56,7 +181,6 @@ def addNotification(nomeJogo, genero):
     file.write(f"{nomeJogo};{genero};{dataCriacao}\n")
     file.close()
 
-#função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
 def verificarGeneroJogosFavoritos(genero):
     """
     Função que verifica se o jogo adicionado à lista de jogos é do mesmo genero que um dos jogos favoritos do utilizador
@@ -64,48 +188,28 @@ def verificarGeneroJogosFavoritos(genero):
     listaJogosFavoritos = readFiles.lerFicheiroJogosFavoritos()
     for linha in listaJogosFavoritos:
         jogo = linha.split(";")
-        if jogo[1] == currentUser and jogo[2] == genero:
+        if jogo[0] == currentUser and jogo[2] == genero:
             return True
     return False
 
-#função que verifica se a data do ultimo logout é inferior à data de criação da notificação
 def verificarDataUltimoLogout(dataCriacao):
     """
-    Função que verifica se a data do ultimo logout é inferior à data de criação da notificação
+    Função que verifica se a data do último logout é inferior à data de criação da notificação
     """
+    
     listaUsers = readFiles.lerFicheiroUsers()
     for linha in listaUsers:
         user = linha.split(";")
         if user[0] == currentUser:
             dataUltimoLogout = user[4]
-            if dataUltimoLogout < dataCriacao:
-                return True
+            try:
+                dataUltimoLogout = datetime.datetime.strptime(dataUltimoLogout, "%Y-%m-%d %H:%M:%S")
+                dataCriacao = datetime.datetime.strptime(dataCriacao, "%Y-%m-%d %H:%M:%S")
+                return dataUltimoLogout < dataCriacao
+            except ValueError:
+                return False
     return False
 
-#função que verifica se o utilizador tem notificações para apresentar
-def verificarNotificacoes():
-    """
-    Função que verifica se o utilizador tem notificações para apresentar
-    """
-    listaNotificacoes = readFiles.lerFicheiroNotificacoes()
-    for linha in listaNotificacoes:
-        notificacao = linha.split(";")
-        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
-            return True
-    return False
-
-#função que apresenta as notificações na scrollbox
-def mostrarNotificacoes():
-    """
-    Função que apresenta as notificações na scrollbox
-    """
-    listaNotificacoes = readFiles.lerFicheiroNotificacoes()
-    for linha in listaNotificacoes:
-        notificacao = linha.split(";")
-        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
-            scrollNotificacoes.insert("end", f"Game: {notificacao[0]}\nGenre: {notificacao[1]}\nDate: {notificacao[2]}\n\n")
-
-#função que apaga uma notificação do ficheiro notificacoes.txt
 def deleteNotification(nomeJogo):
     """
     Função que apaga uma notificação do ficheiro notificacoes.txt
@@ -115,7 +219,7 @@ def deleteNotification(nomeJogo):
         notificacao = linha.split(";")
         if notificacao[0] == nomeJogo:
             listaNotificacoes.remove(linha)
-    file = open("notificacoes.txt", "w", encoding="utf-8")
+    file = open("files/notificacoes.txt", "w", encoding="utf-8")
     file.writelines(listaNotificacoes)
     file.close()
 
@@ -129,16 +233,15 @@ def addComment(game,comment,user,rating):
     """
     Função que adiciona um comentário ao ficheiro comentarios.txt
     """
-    dataCriacao = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-    file = open("comentarios.txt", "a", encoding="utf-8")
-    file.write(f"{game};{comment};{user};{rating};{dataCriacao}\n")
+    file = open("files/comentarios.txt", "a", encoding="utf-8")
+    file.write(f"{game};{user};{rating};{comment}\n")
     file.close()
 
 def showComments(game):
     """
     Função que mostra os comentários de um jogo dentro de uma frame na interface gráfica
     """
-    listaComentarios = rf.lerFicheiroComentarios()
+    listaComentarios = readFiles.lerFicheiroComentarios()
     for linha in listaComentarios:
         comentario = linha.split(";")
         if comentario[0] == game:
@@ -147,9 +250,6 @@ def showComments(game):
             comment_label = ctk.CTkLabel(comment_frame, text=f"User: {comentario[2]}\nRating: {comentario[3]}\nComment: {comentario[1]}", text_color="white", font=("Arial", 12))
             comment_label.pack(side=ctk.LEFT, padx=35, pady=50)
     return comment_frame
-
-#FUNCOES DOS JOGOS
-# ADMINISTRADOR:
 
 def addGame(entryNomeJogo, entryGenero, entryDescricao, imagePath):
     """
@@ -164,104 +264,112 @@ def addGame(entryNomeJogo, entryGenero, entryDescricao, imagePath):
         #chamar função de notificações
         addNotification(nomeJogo,genero)
         file = open("files/jogos.txt", "a", encoding="utf-8")
-        file.write(f"{nomeJogo};{genero};{descricao};{imagePath}\n")
+        file.write(f"{nomeJogo};{genero};{descricao.strip("\n")};{imagePath}\n")
         file.close()
         messagebox.showinfo("Success", "Game added successfully!")
-        entryNomeJogo.delete(0, "end")
-        entryGenero.delete(0, "end")
-        entryDescricao.delete("1.0", "end")
-
-def deleteGame():
+        
+def deleteGame(treeview):
     """
     Função que apaga um jogo da lista de jogos
     """
-    if nomeJogo == "":
+    selected_item = treeview.selection()  # Pega o item selecionado na Treeview
+    if not selected_item:  # Verifica se há algum item selecionado
+        messagebox.showerror("Error", "Please select a game to delete!")
+        return
+    
+    # Obtém o nome do jogo da primeira coluna do item selecionado
+    nomeJogo = treeview.item(selected_item)["values"][0]
+    
+    if nomeJogo == "":  # Verifica se o nome do jogo está vazio
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        deleteNotification(nomeJogo)
-        listaJogos = users.lerFicheiroJogos()
+        deleteNotification(nomeJogo)  # Supondo que você tenha essa função definida
+        listaJogos = readFiles.lerFicheiroJogos()  # Função para ler o arquivo de jogos
         for linha in listaJogos:
             jogo = linha.split(";")
             if jogo[0] == nomeJogo:
-                listaJogos.remove(linha)
-                file = open("jogos.txt", "w", encoding="utf-8")
+                listaJogos.remove(linha)  # Remove o jogo da lista
+
+                # Apaga a imagem do jogo
+                image_path = jogo[3].strip()  # Supondo que a imagem esteja na 4ª coluna
+                if os.path.exists(image_path):
+                    os.remove(image_path)  # Apaga o arquivo de imagem
+                else:
+                    print(f"Imagem não encontrada: {image_path}")
+
+                # Reabre o arquivo e escreve a lista de jogos atualizada
+                file = open("files/jogos.txt", "w", encoding="utf-8")
                 file.writelines(listaJogos)
                 file.close()
                 messagebox.showinfo("Success", "Game deleted successfully!")
                 break
         else:
             messagebox.showerror("Error", "Game not found!")
+    refreshTreeviewGame(treeview)
 
-# UTILIZADOR:
-
-def addGameFav():
+def removeGameFav(gameName):
     """
-    Função que adiciona um jogo aos favoritos do utilizador quando este clica num botão
+    Função que remove um jogo dos favoritos do utilizador
     """
+    lFavGames = readFiles.lerFicheiroJogosFavoritos()
+    updated_fav_games = []
 
-"""
-def deleteGameFav(treeview):
-    
-    #Função que apaga um jogo dos favoritos do utilizador
-    
-    if treeview.selection() == "":
-        messagebox.showerror("Error", "Please select a game!")
-    else:
-        gameName = treeview.item(treeview.selection())["values"][0]
-        lfavGames = users.lerFicheiroJogosFavoritos()
-        for line in lfavGames:
-            game = line.split(";")
-            if game[0] == gameName and game[1] == currentUser:
-                lfavGames.remove(line)
-                file = open("jogosFavoritos.txt", "w", encoding="utf-8")
-                file.writelines(lfavGames)
-                file.close()
-                messagebox.showinfo("Success", "Game deleted from favorites successfully!")
-                break
+    # Procura o jogo nos favoritos e remove-o
+    game_found = False
+    for line in lFavGames:
+        favGame = line.strip().split(";")
+        if len(favGame) >= 2 and favGame[1] == gameName and favGame[0] == currentUser:
+            game_found = True  # Marca que o jogo foi encontrado
         else:
-            messagebox.showerror("Error", "Game not found!")"""
+            updated_fav_games.append(line)  # Mantém o jogo na lista se não for o jogo a ser removido
 
-def addComentario(nomeJogo, currentUser, comentario):
+    if not game_found:
+        messagebox.showerror("Error", "Game not found in your favorites")
+        return
+
+    # Reescreve o arquivo com a lista atualizada de favoritos
+    file = open("files/jogosFavoritos.txt", "w", encoding="utf-8")
+    file.writelines(updated_fav_games)
+    file.close()
+
+    messagebox.showinfo("Success", "Game removed from your library successfully!")
+
+def addGameFav(gameName, gameGenre):
+    """
+    Função que adiciona um jogo aos favoritos do utilizador
+    """
+    lFavGames = readFiles.lerFicheiroJogosFavoritos()
+    
+    for line in lFavGames:
+        favGame = line.strip().split(";") 
+        if len(favGame) >= 2 and favGame[1] == gameName and favGame[0] == currentUser:
+            messagebox.showerror("Error", "You already have this game in your library")
+            return
+
+    # Se o jogo não estiver nos favoritos, adiciona-o
+    file = open("files/jogosFavoritos.txt", "a", encoding="utf-8")
+    file.write(f"{currentUser};{gameName};{gameGenre}\n")
+    file.close()
+    
+    messagebox.showinfo("Success", "Game added to your library successfully!")
+
+def addComentario(nomeJogo, rating, comentario):
     """
     Função que adiciona um comentário a um jogo
     """
     if nomeJogo == "" or comentario == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
-        file = open("comentarios.txt", "a", encoding="utf-8")
-        file.write(f"{nomeJogo};{currentUser};{comentario}\n")
+        file = open("files/comentarios.txt", "a", encoding="utf-8")
+        file.write(f"{nomeJogo};{currentUser};{rating};{comentario.strip()}\n")
         file.close()
         messagebox.showinfo("Success", "Comment added successfully!")
 
-def showFavGames(currentUser):
-    """
-    Função que apresenta os jogos favoritos do utilizador
-    """
-    listaJogosFav = readFiles.lerFicheiroJogosFavoritos()
-    for linha in listaJogosFav:
-        jogo = linha.split(";")
-        if jogo[0] == currentUser:
-            scrollFavGames.insert("end", f"Game: {jogo[1]}\nGenre: {jogo[2]}\n\n")
-
-def showGames():
-    """
-    Função que apresenta 
-    """
-    listaJogos = users.lerFicheiroJogos()
-    for linha in listaJogos:
-        jogo = linha.split(";")
-        scrollGames.insert("end", f"Game: {jogo[0]}\nGenre: {jogo[1]}\nPrice: {jogo[2]}\nDescription: {jogo[3]}\nRelease Date: {jogo[4]}\nRating: {jogo[5]}\nPlatform: {jogo[6]}\n\n")
-
-#Funções dos users
-# ADMINISTRADOR:
-
-def addUser( entryUsername, entryPassword, entryPermLevel):
+def addUser( username, password, permLevel):
     """
     Função que adiciona um utilizador à lista de utilizadores
     """
-    username = entryUsername.get()
-    password = entryPassword.get()
-    permLevel = entryPermLevel.get()
+
     if username == ""  or password == "" or permLevel == "":
         messagebox.showerror("Error", "Please fill in all fields!")
     else:
@@ -275,35 +383,71 @@ def addUser( entryUsername, entryPassword, entryPermLevel):
                 messagebox.showerror("Error", "Password must be at least 8 characters long!")
                 return
             else:
-                file = open("users.txt", "a", encoding="utf-8")
-                file.write(f"{username};{password};{permLevel};\n")
+                file = open("files/users.txt", "a", encoding="utf-8")
+                file.write(f"{username};{password};{permLevel};a;\n")
                 file.close()
                 messagebox.showinfo("Success", "User added successfully!")
-                entryUsername.delete(0, "end")
-                entryPassword.delete(0, "end")
                 return
 
 def deleteUser(treeview):
     """
-    Função que apaga um utilizador da lista de utilizadores
+    Função que apaga um utilizador da lista de utilizadores e sua imagem
+    e faz refresh na Treeview
     """
     username = treeview.item(treeview.selection())["values"][0]
+    
     if username == "":
-        messagebox.showerror("Error", "Please fill in all fields!")
-    else:
-        listaUsers = readFiles.lerFicheiroUsers()
-        for linha in listaUsers:
-            user = linha.split(";")
-            if user[0] == username:
-                listaUsers.remove(linha)
-                file = open("users.txt", "w", encoding="utf-8")
+        messagebox.showerror("Error", "Please select a user to delete!")
+        return
+    
+    listaUsers = readFiles.lerFicheiroUsers() 
+    for linha in listaUsers:
+        user = linha.split(";")
+        
+        if user[0] == username:
+            if len(user) == 5:
+                listaUsers.remove(linha) 
+                image_path = user[4].strip()
+                file = open("files/users.txt", "w", encoding="utf-8")
                 file.writelines(listaUsers)
                 file.close()
-                messagebox.showinfo("Success", "User deleted successfully!")
-                return
-        messagebox.showerror("Error", "User not found!")        
+                if os.path.exists(image_path):
+                    os.remove(image_path)  
+                else:
+                    print(f"Imagem não encontrada: {image_path}")
+            else:
+                listaUsers.remove(linha)
+                file = open("files/users.txt", "w", encoding="utf-8")
+                file.writelines(listaUsers)
+                file.close()
+            
+            
+            
+            # Atualiza a Treeview para refletir a remoção
+            refreshTreeviewUser(treeview)
+            
+            messagebox.showinfo("Success", "User deleted successfully!")
+            return
+    
+    messagebox.showerror("Error", "User not found!")  # Caso o utilizador não seja encontrado
 
-# UTILIZADOR:
+def refreshTreeviewUser(treeview):
+    """
+    Função que atualiza a Treeview com a lista atualizada de utilizadores
+    """
+    # Limpa todos os itens da Treeview
+    for item in treeview.get_children():
+        treeview.delete(item)
+    
+    # Repopula a Treeview com a lista de utilizadores atualizada
+    lUsers = readFiles.lerFicheiroUsers()
+    for line in lUsers:
+        user = line.split(";")
+        if user[2] != "2":
+            treeview.insert('', 'end', values=(user[0].strip(), "User"))
+        else:
+            continue
+
 def signinFunction(newUsernameEntry,newPasswordEntry):
     """
     Função que regista um utilizador na lista de utilizadores
@@ -316,7 +460,7 @@ def signinFunction(newUsernameEntry,newPasswordEntry):
         uList = readFiles.lerFicheiroUsers()
         if not uList:
             file = open(".\\files\\users.txt", "a", encoding="utf-8")
-            file.write(f"{username};{password};1;\n")
+            file.write(f"{username};{password};1;a;\n")
             file.close()
             messagebox.showinfo("Success", "User added successfully!")
             newUsernameEntry.delete(0, "end")
@@ -333,7 +477,7 @@ def signinFunction(newUsernameEntry,newPasswordEntry):
                     return
                 else:
                     file = open(".\\files\\users.txt", "a", encoding="utf-8")
-                    file.write(f"{username};{password};1;\n")
+                    file.write(f"{username};{password};1;a;\n")
                     file.close()
                     messagebox.showinfo("Success", "User added successfully!")
                     newUsernameEntry.delete(0, "end")
@@ -359,20 +503,22 @@ def userLogin(userInput, password):
     messagebox.showerror("Error", "Invalid username or password!")
     return currentUser
 
-def userLogout(application):
+def userLogout():
     """
     Função que faz logout do utilizador
     """
     listaUsers = readFiles.lerFicheiroUsers()
-    for linha in listaUsers:
+    for index, linha in enumerate(listaUsers):
         user = linha.split(";")
-        if user[0] == user:
+        if user[0] == currentUser:
             user[3] = str(datetime.datetime.now())
-            listaUsers.remove(linha)
+
+            listaUsers[index] = ";".join(user) + "\n" 
+
             file = open(".\\files\\users.txt", "w", encoding="utf-8")
             file.writelines(listaUsers)
             file.close()
-            messagebox.showinfo("Success", "Logged out successfully!")
+
             app.destroy()
             return
             
@@ -400,7 +546,7 @@ def showFrame(frame):
 #-----------------------------------------------------------------
 def selectProfileImage():
     file_path = filedialog.askopenfilename(initialdir="./Images", title="Select Image",
-                                           filetypes=(("PNG Images", "*.png"), ("JPG Images", "*.jpg")))
+                                           filetypes=(("PNG Images", "*.png"), ("JPG Images", "*.jpg"),("JPEG Images","*.jpeg")))
     if file_path:
         img = Image.open(file_path).resize((100, 100), Image.Resampling.LANCZOS)
         mask = Image.new("L", (100, 100), 0)
@@ -615,20 +761,54 @@ def storePageUI():
     profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
 
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
-    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50)
 
-    game_frame = ctk.CTkFrame(app, fg_color="#101010", width=800, height=400)
-    game_frame.pack(pady=100)
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command=lambda: filterGames(search_entry.get()))
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+
+    game_frame = ctk.CTkScrollableFrame(app, fg_color="#101010")
+    game_frame.pack(fill="both", expand=True, pady=100)
 
     gamesList = readFiles.lerFicheiroJogos()
-    for line in gamesList:
+
+    max_games_per_row = 3 
+    current_row = 0
+    current_column = 0
+    row_frame = None
+
+    for i, line in enumerate(gamesList):
         game = line.split(";")
-        game_image = ctk.CTkImage(Image.open(game[3]), size=(200, 300))
-        game_button = ctk.CTkButton(game_frame, image=game_image, text="", fg_color="#101010", width=200, height=300,
-                                    command=lambda: gameAspect(game[0],game[1],game[2],game[3]))
-        game_button.place(x=30, y=26)
-        gameTxt = ctk.CTkLabel(game_frame, text=game[0], text_color="white", font=("Arial", 18))
-        gameTxt.place(x=100, y=340)
+        game_image = ctk.CTkImage(Image.open(game[3].strip()), size=(200, 300))
+
+        if current_column == 0:
+            row_frame = ctk.CTkFrame(game_frame, fg_color="#101010")
+            row_frame.pack(side="top", fill="x", padx=10, pady=10)
+
+        game_item_frame = ctk.CTkFrame(row_frame, fg_color="#101010", width=200, height=340)
+        game_item_frame.pack(side="left", padx=10, pady=20)
+
+        game_button = ctk.CTkButton(
+            game_item_frame,
+            image=game_image,
+            text="",
+            fg_color="#101010",
+            width=200,
+            height=300,
+            command=lambda g=game: gameAspect(g[0], g[1], g[2], g[3].strip())
+        )
+        game_button.pack()
+
+        gameTxt = ctk.CTkLabel(
+            game_item_frame,
+            text=game[0],
+            text_color="white",
+            font=("Arial", 18)
+        )
+        gameTxt.pack(pady=5)
+
+        current_column += 1
+        if current_column >= max_games_per_row:
+            current_column = 0
 
 def libraryPageUI():
     # --------------DESIGN PÁGINA BIBLIOTECA ---------------------
@@ -679,32 +859,66 @@ def libraryPageUI():
                                    text="", hover_color="#FF5900", command=lambda:settingsPageUI())
     profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
 
+    
+
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
-    game_frame = ctk.CTkFrame(app, fg_color="#101010", width=800, height=400)
-    game_frame.pack(pady=100)
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command=lambda: filterGames(search_entry.get()))
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+    
+    game_frame = ctk.CTkScrollableFrame(app, fg_color="#101010")
+    game_frame.pack(fill="both", expand=True, pady=100)
 
-    game1_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
-    game1_button = ctk.CTkButton(game_frame, image=game1_image, text="", fg_color="#101010", width=200, height=300,
-                                 command=lambda: gameAspect())
-    game1_button.place(x=30, y=26)
-    game1Txt = ctk.CTkLabel(game_frame, text="GAME 1", text_color="white", font=("Arial", 18))
-    game1Txt.place(x=100, y=340)
+    lFavGames = readFiles.lerFicheiroJogosFavoritos()
 
-    game2_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
-    game2_button = ctk.CTkButton(game_frame, image=game2_image, text="", fg_color="#101010", width=200, height=300,
-                                 command=lambda: gameAspect())
-    game2_button.place(x=310, y=26)
-    game2Txt = ctk.CTkLabel(game_frame, text="GAME 2", text_color="white", font=("Arial", 18))
-    game2Txt.place(x=380, y=340)
+    max_games_per_row = 4  
 
-    game3_image = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
-    game3_button = ctk.CTkButton(game_frame, image=game3_image, text="", fg_color="#101010", width=200, height=300,
-                                 command=lambda: gameAspect())
-    game3_button.place(x=580, y=26)
-    game3Txt = ctk.CTkLabel(game_frame, text="GAME 3", text_color="white", font=("Arial", 18))
-    game3Txt.place(x=650, y=340)
+    current_row = 0
+    current_column = 0
+
+    row_frame = None
+
+    for line in lFavGames:
+        gameFav = line.split(";")
+        if currentUser == gameFav[0]:
+            lGames = readFiles.lerFicheiroJogos()
+            for line2 in lGames:
+                game = line2.split(";")
+                if game[0] == gameFav[1]:
+
+                    game_image = ctk.CTkImage(Image.open(game[3].strip()), size=(200, 300))
+
+                    if current_column == 0:
+                        row_frame = ctk.CTkFrame(game_frame, fg_color="#101010")
+                        row_frame.pack(side="top", fill="x", padx=10, pady=10)
+
+                    game_item_frame = ctk.CTkFrame(row_frame, fg_color="#101010", width=200, height=340)
+                    game_item_frame.pack(side="left", padx=10, pady=20)
+
+                    game_button = ctk.CTkButton(
+                        game_item_frame,
+                        image=game_image,
+                        text="",
+                        fg_color="#101010",
+                        width=200,
+                        height=300,
+                        command=lambda g=game: gameAspect(g[0], g[1], g[2], g[3].strip())
+                    )
+                    game_button.pack()
+
+                    gameTxt = ctk.CTkLabel(
+                        game_item_frame,
+                        text=game[0],
+                        text_color="white",
+                        font=("Arial", 18)
+                    )
+                    gameTxt.pack(pady=5)
+
+                    current_column += 1
+
+                    if current_column >= max_games_per_row:
+                        current_column = 0
 
 def adminPageUI():
     # ---------------PÁGINA ADMIN---------------------
@@ -762,46 +976,75 @@ def adminPageUI():
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: gamesManagerUI())
     gamesManagerBtn.pack(side="left", padx=50, anchor="center")
 
+    # Ler dados dos ficheiros
+    total_users = len(readFiles.lerFicheiroUsers())  # Quantidade total de usuários
+    total_games = len(readFiles.lerFicheiroJogos())  # Quantidade total de jogos
+    jogos_fav_data = readFiles.lerFicheiroJogosFavoritos()  # Dados dos jogos favoritados
+
+    # Criar lista de jogos mais favoritados
+    jogos_fav_count = {}
+    for jogo in jogos_fav_data:
+        if jogo in jogos_fav_count:
+            jogos_fav_count[jogo] += 1
+        else:
+            jogos_fav_count[jogo] = 1
+
+    # Ordenar jogos pelo número de favoritos (maior para menor) e pegar o top 5
+    top_games = sorted(jogos_fav_count.items(), key=lambda x: x[1], reverse=True)[:5]
+
     label_frame = ctk.CTkFrame(app, fg_color="black")
     label_frame.pack(pady=(50, 0), anchor="center")
 
-    totalUsers_label = ctk.CTkLabel(label_frame, text="TOTAL USERS:", text_color="white", font=("Arial", 18))
-    totalUsers_label.pack(side="left", padx=50, anchor="center")
+    totalUsers_label = ctk.CTkLabel(label_frame, text=f"TOTAL USERS: {total_users}", text_color="white", font=("Arial", 18))
+    totalUsers_label.pack(side="left", padx=(0,50), anchor="center")
 
-    totalGames_label = ctk.CTkLabel(label_frame, text="TOTAL GAMES:", text_color="white", font=("Arial", 18))
+    totalGames_label = ctk.CTkLabel(label_frame, text=f"TOTAL GAMES: {total_games}", text_color="white", font=("Arial", 18))
     totalGames_label.pack(side="left", padx=50, anchor="center")
 
     def graphFunc():
-        data = [10, 20, 30, 40, 50]  
-        labels = ['A', 'B', 'C', 'D', 'E'] 
-        
         canvas.delete("all")  
 
-        bar_width = 40  
-        spacing = 30  
+        bar_width = 80  
+        spacing = 50  
+        max_value = max([value for _, value in top_games]) if top_games else 1  
 
-        for i, value in enumerate(data):
-            x1 = i * (bar_width + spacing) + 50 
-            y1 = 300 
+        for i, (game, favorites) in enumerate(top_games):
+            x1 = i * (bar_width + spacing) + 50  
+            y1 = 300  
             x2 = x1 + bar_width  
-            y2 = y1 - value  
+            y2 = y1 - int((favorites / max_value) * 250)  
 
+            # Desenhar barra
             canvas.create_rectangle(x1, y1, x2, y2, fill="orange")
             
-            canvas.create_text(x1 + bar_width / 2, y1 + 20, text=labels[i], fill="white")
-        
-        for i, value in enumerate(data):
-            canvas.create_text(i * (bar_width + spacing) + 50 + bar_width / 2, y1 - value - 10, 
-                            text=str(value), fill="black")
+            # Nome do jogo DENTRO da barra (ou ajustar se necessário)
+            canvas.create_text(
+                x1 + bar_width / 2,  # Posição X (centro da barra)
+                (y1 + y2) / 2,      # Posição Y (meio da barra)
+                text=game,           # Nome do jogo
+                fill="black",        # Cor do texto (muda para preto para melhor contraste)
+                font=("Arial", 10, "bold")
+            )
             
-    canvas = ctk.CTkCanvas(app, width=500, height=300, bg="black")
+            # Quantidade de favoritos acima da barra
+            canvas.create_text(
+                x1 + bar_width / 2,  # Posição X (centro da barra)
+                y2 - 10,             # Posição Y (acima da barra)
+                text=str(favorites), # Texto com o número de favoritos
+                fill="white", 
+                font=("Arial", 10, "bold")
+            )
+
+          
+
+    canvas = tk.Canvas(app, width=600, height=300, bg="black", highlightthickness=0)
     canvas.pack(pady=20)
 
     draw_button = ctk.CTkButton(app, text="DRAW GRAPH", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
-                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:graphFunc())
+                                border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=graphFunc)
     draw_button.pack()
 
-def gameAspect(gameName):
+def gameAspect(gameName, gameGenre, gameDescription, gameImage):
     # ---------------ASPECTO JOGOS---------------------
     #-----------------------------------------------------------------
     for widget in app.winfo_children():
@@ -851,48 +1094,81 @@ def gameAspect(gameName):
     profile_circle.pack(side=ctk.RIGHT, padx=(0, 15), pady=30)
 
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
-    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
+    search_entry.pack(side=ctk.RIGHT, padx=20, pady=50)
 
-    imgGame = ctk.CTkImage(Image.open("Images/game.png"), size=(200, 300))
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command=lambda: filterGames(search_entry.get()))
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+
+    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900",
+                                width=292, height=37, border_color="#2E2B2B", text_color="black", 
+                                font=ctk.CTkFont(size=20, weight="bold"), command=lambda:storePageUI())
+    backBtn.place(x=350, y=150)
+    
+    imgGame = ctk.CTkImage(Image.open(gameImage), size=(200, 300))
     imgGame_label = ctk.CTkLabel(app, image=imgGame, text="", fg_color="#2E2B2B")
     imgGame_label.place(x=350, y=200)
 
     nameGame_label = ctk.CTkLabel(app, text=gameName, text_color="white", font=("Arial", 18))
     nameGame_label.place(x=580, y=220)
 
-    gameDescription=ctk.CTkTextbox(app, width=480, height=180, fg_color="white", font=("Arial", 12), text_color="black")
-    gameDescription.place(x=350, y=520)
+    gameDescriptionBox = ctk.CTkTextbox(app, width=480, height=180, fg_color="white", font=("Arial", 12), text_color="black", state="normal")
+    gameDescriptionBox.place(x=350, y=520)
 
-    saveBtn = ctk.CTkButton(app, text="SAVE", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37,
-                            border_color="black", text_color="black",font=ctk.CTkFont(size=20, weight="bold"), command=lambda: addGameFav())
-    saveBtn.place(x=580, y=260) 
+    gameDescriptionBox.insert("1.0", gameDescription)
+    gameDescriptionBox.configure(state="disabled")
 
-    backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900",
-                            width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:storePageUI())
-    backBtn.place(x=350, y=150)
+    # Verifica se o jogo já está nos favoritos do utilizador
+    lFavGames = readFiles.lerFicheiroJogosFavoritos()
+    game_in_fav = False
+    for line in lFavGames:
+        favGame = line.strip().split(";")
+        if favGame[0] == currentUser and favGame[1] == gameName:
+            game_in_fav = True
+            break
 
-    comment_frame=ctk.CTkFrame(app, fg_color="#101010", width=300, height=520, corner_radius=10)
+    # Se o jogo já está nos favoritos, mostra o botão "Remove", caso contrário, mostra o botão "Save"
+    if game_in_fav:
+        removeBtn = ctk.CTkButton(app, text="REMOVE", fg_color="#FF4500", hover_color="#FF5900", width=140, height=37,
+                            border_color="black", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: removeGameFav(gameName))
+        removeBtn.place(x=580, y=260)
+    else:
+        saveBtn = ctk.CTkButton(app, text="SAVE", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37,
+                            border_color="black", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: addGameFav(gameName, gameGenre))
+        saveBtn.place(x=580, y=260)
+
+    comment_frame = ctk.CTkFrame(app, fg_color="#101010", width=300, height=520, corner_radius=10)
     comment_frame.place(x=860, y=150)
 
-    commentZone=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
-    commentZone.place(x=10, y=20)
+    listaComentarios = readFiles.lerFicheiroComentarios()
 
-    commentZone2=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
-    commentZone2.place(x=10, y=150)
+    if listaComentarios:  # Apenas processa se a lista não estiver vazia
+        for linha in listaComentarios:
+            comentario = linha.strip().split(";")  # Remove espaços extras e quebra linhas
+            if len(comentario) >= 4 and comentario[0] == gameName:  # Verifica se há campos suficientes e se o jogo corresponde
+                comment_label = ctk.CTkLabel(
+                    comment_frame, 
+                    text=f"User: {comentario[1]}\nRating: {comentario[2]}/5\nComment: {comentario[3]}", 
+                    text_color="white", 
+                    font=("Arial", 12),
+                    wraplength=280  # Limita o comprimento do texto
+                )
+                comment_label.pack(anchor="w", padx=10, pady=10)  # Alinha à esquerda e adiciona espaçamento
+    else:
+        # Mensagem padrão se não houver comentários
+        empty_label = ctk.CTkLabel(
+            comment_frame, 
+            text="Nenhum comentário disponível para este jogo.", 
+            text_color="white", 
+            font=("Arial", 12)
+        )
+        empty_label.pack(anchor="center", pady=20)
 
-    commentZone3=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
-    commentZone3.place(x=10, y=280)
-
-    commentZone3=ctk.CTkTextbox(comment_frame, width=280, height=100, fg_color="white", font=("Arial", 12), text_color="black")
-    commentZone3.place(x=10, y=410)
-
-    createCommentBtn = ctk.CTkButton(app, text="CRATE A COMMENT", fg_color="#FFA500", hover_color="#FF5900",
+    createCommentBtn = ctk.CTkButton(app, text="CREATE A COMMENT", fg_color="#FFA500", hover_color="#FF5900",
                             width=300, height=37, border_color="#2E2B2B", text_color="black", 
-                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:commentsPage())
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:commentsPage(gameName))
     createCommentBtn.place(x=860, y=680)
 
-def commentsPage():
+def commentsPage(gameName):
     # ---------------PÁGINA COMENTÁRIOS---------------------
     #-----------------------------------------------------------------
     for widget in app.winfo_children():
@@ -944,6 +1220,9 @@ def commentsPage():
     search_entry = ctk.CTkEntry(topbar, placeholder_text="Search...", font=("Arial", 16), width=300)
     search_entry.pack(side=ctk.RIGHT, padx=20, pady=50) 
 
+    search_btn = ctk.CTkButton(topbar, text="\u2315", text_color="white", fg_color="#FF5900", font=("Arial", 16), hover_color="#FF4500", width=30, height=30, command=lambda: filterGames(search_entry.get()))
+    search_btn.pack(side=ctk.RIGHT, pady=30)
+
     ratingList = ["Select..." ,"1", "2", "3", "4", "5"]
 
     rating_label= ctk.CTkLabel(app, text="Rating", text_color="white", font=("Arial", 18))
@@ -958,12 +1237,12 @@ def commentsPage():
 
     commentBtn = ctk.CTkButton(app, text="COMMENT HERE", fg_color="#FFA500", hover_color="#FF5900",
                             width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:"")
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:addComentario(gameName,rating.get(),commentTxt.get("1.0", "end")))
     commentBtn.place(x=580, y=600)
 
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900",
                             width=292, height=37, border_color="#2E2B2B", text_color="black", 
-                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:gameAspect())
+                            font=ctk.CTkFont(size=20, weight="bold"), command=lambda:storePageUI())
     backBtn.place(x=580, y=650)
 
 def settingsPageUI():
@@ -1030,13 +1309,27 @@ def settingsPageUI():
     notification_frame = ctk.CTkScrollableFrame(app, width=775, height=200, fg_color="white")
     notification_frame.place(x=370, y=360)
 
+    listaNotificacoes = readFiles.lerFicheiroNotificacoes()
+    for linha in listaNotificacoes:
+        notificacao = linha.split(";")
+        if verificarGeneroJogosFavoritos(notificacao[1]) and verificarDataUltimoLogout(notificacao[2]):
+            notification_text = f"Game: {notificacao[0]}\nGenre: {notificacao[1]}"
+            notifications_label = ctk.CTkLabel(notification_frame,
+                                            text=notification_text,
+                                            text_color="white",
+                                            font=("Arial", 14),
+                                            fg_color="#101010",
+                                            width=300, height=100,
+                                            anchor="w")
+            notifications_label.pack(pady=10, padx=20)
+
     msgSettings_frame= ctk.CTkFrame (app, width=600, height=52, corner_radius=10, fg_color="#FFA500")
     msgSettings_frame.place(x=370, y=580)
 
     msgSettings_label = ctk.CTkLabel(msgSettings_frame, text="YOU'RE A PRO PLAYER, DON'T GIVE UP", text_color="black", font=("Arial", 22, "bold"))
     msgSettings_label.place(relx=0.5, rely=0.5, anchor="center")
 
-    logoutBtn = ctk.CTkButton(app, text="LOGOUT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=191, height=52, command=lambda:loginUI())
+    logoutBtn = ctk.CTkButton(app, text="LOGOUT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=191, height=52, command=lambda:userLogout())
     logoutBtn.place(x=980, y=580)
 
     deleteAccountBtn= ctk.CTkButton(app, text="DELETE ACCOUNT", text_color="white", fg_color="#FF5900", font=("Arial", 22, "bold"), hover_color="#FF4500", width=800, height=55, command=lambda:deletePageUI())
@@ -1100,7 +1393,7 @@ def addGameUI():
     # -----------------------------------------------------------------
     def selectImage(gameName):  
         file_path = filedialog.askopenfilename(initialdir="./Images", title="Select Image",
-                                filetypes=(("PNG Images", "*.png"), ("JPG Images", "*.jpg")))
+                                filetypes=(("PNG Images", "*.png"),("JPG Images", "*.jpg"),("JPEG Images","*.jpeg")))
         if file_path:
             # Atualizar o caminho da imagem na variável global
             selected_image_path[0] = f"Images/games/{gameName}.png"
@@ -1131,7 +1424,6 @@ def addGameUI():
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", width=140, height=37, 
                                 border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:gamesManagerUI())
     backBtn.pack(side="left", padx=5, pady=(0,0), anchor="center")
-
 
 def addUserUI():
     # ---------------ADICIONAR UTILIZADOR---------------------
@@ -1193,7 +1485,7 @@ def addUserUI():
     radioBtn2.pack(side=ctk.LEFT, padx=10)
 
     addUserBtn = ctk.CTkButton(app, text="ADD USER", fg_color="#FFA500", hover_color="#FF5900", width=292, height=37,
-                                border_color="black", text_color="black",font=ctk.CTkFont(size=20, weight="bold"), command="")
+                                border_color="black", text_color="black",font=ctk.CTkFont(size=20, weight="bold"), command=lambda:addUser(addUsername_entry.get(),addPassword_entry.get(),radio_value.get()))
     addUserBtn.pack(pady=20, anchor="center")
 
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", 
@@ -1255,6 +1547,14 @@ def usersManagerUI():
     verticalScrollbar.pack(side="right", fill="y")
     tree.configure(yscrollcommand=verticalScrollbar.set)
 
+    lUsers = readFiles.lerFicheiroUsers()
+    for line in lUsers:
+        user = line.split(";")
+        if user[2] != "2":
+            tree.insert('', 'end', values=(user[0].strip(), "User"))
+        else:
+            continue
+
     button_frame = ctk.CTkFrame(app, fg_color="black")
     button_frame.pack(pady=(20, 0), anchor="center")
 
@@ -1262,12 +1562,8 @@ def usersManagerUI():
                            width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: addUserUI())
     addBtn.pack(side="left", padx=10)
 
-    editBtn = ctk.CTkButton(button_frame, text="EDIT", fg_color="#FFA500", hover_color="#FF5900", 
-                            width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
-    editBtn.pack(side="left", padx=10)
-
     deleteBtn = ctk.CTkButton(button_frame, text="DELETE", fg_color="#FFA500", hover_color="#FF5900", 
-                              width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
+                              width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: deleteUser(tree))
     deleteBtn.pack(side="left", padx=10)
 
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", 
@@ -1329,6 +1625,11 @@ def gamesManagerUI():
     verticalScrollbar.pack(side="right", fill="y")
     tree.configure(yscrollcommand=verticalScrollbar.set)
 
+    lGames = readFiles.lerFicheiroJogos()
+    for line in lGames:
+        game = line.split(";")
+        tree.insert('', 'end', values=(game[0].strip(), game[1].strip()))
+
     button_frame = ctk.CTkFrame(app, fg_color="black")
     button_frame.pack(pady=(20, 0), anchor="center")
 
@@ -1336,12 +1637,8 @@ def gamesManagerUI():
                            width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda: addGameUI())
     addBtn.pack(side="left", padx=10)
 
-    editBtn = ctk.CTkButton(button_frame, text="EDIT", fg_color="#FFA500", hover_color="#FF5900", 
-                            width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
-    editBtn.pack(side="left", padx=10)
-
     deleteBtn = ctk.CTkButton(button_frame, text="DELETE", fg_color="#FFA500", hover_color="#FF5900", 
-                              width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command="")
+                              width=140, height=37, text_color="black", font=ctk.CTkFont(size=20, weight="bold"), command=lambda:deleteGame(tree))
     deleteBtn.pack(side="left", padx=10)
     
     backBtn = ctk.CTkButton(app, text="BACK", fg_color="#FFA500", hover_color="#FF5900", 
@@ -1379,7 +1676,7 @@ def deletePageUI():
     yesBtn = ctk.CTkButton(button_frame, text="YES, UNFORTUNATELY!", fg_color="#D9D9D9", hover_color="#5A5A5A", width=300, height=60, border_color="#2E2B2B", text_color="black", font=ctk.CTkFont(size=35, weight="bold"), command=lambda: goodbyeUI() )
     yesBtn.pack(side="left", padx=10)
     
-def goodbyeUI():
+"""def goodbyeUI():
     # --------------DESIGN GOODBYE ---------------------
     #-----------------------------------------------------------------
     
@@ -1404,7 +1701,7 @@ def goodbyeUI():
     msg_loading_label = ctk.CTkLabel(app, text="LOADING...", font=ctk.CTkFont(size=24, weight="bold"), text_color="white")
     msg_loading_label.place(relx=0.5, rely=0.80, anchor="center")
 
-    app.after(5000, loginUI)
+    app.after(5000, app.destroy())"""
 
 # --------------ECRÃ INICIAL ---------------------
 #-----------------------------------------------------------------
@@ -1427,3 +1724,4 @@ initialBtn.place(relx=0.5, rely=0.5, anchor="center")
 # ---------------FIM DA FUNÇÃO DA APP ---------------------
 #-----------------------------------------------------------------
 app.mainloop()
+userLogout()
